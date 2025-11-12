@@ -2,12 +2,12 @@ using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using static SOConstantsGenerator.ConstantsGeneratorHelper;
+using static SOConstantsGenerator.Editor.ConstantsGeneratorHelper;
 
-namespace SOConstantsGenerator;
+namespace SOConstantsGenerator.Editor;
 
 [CustomEditor(typeof(ScriptableObject), true)]
-public class ConstantsGeneratorEditor : Editor
+public class ConstantsGeneratorEditor : UnityEditor.Editor
 {
     public override void OnInspectorGUI()
     {

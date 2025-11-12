@@ -1,0 +1,20 @@
+{
+    "name": "SOConstantsGenerator.Editor",
+    "rootNamespace": "SOConstantsGenerator.Editor",
+    "references": [
+        "GUID:590dbe7f7f024aa49af9c8c7cd6e4c96"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_EDITOR"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

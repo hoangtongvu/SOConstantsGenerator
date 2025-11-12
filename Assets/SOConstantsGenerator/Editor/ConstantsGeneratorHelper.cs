@@ -5,7 +5,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using UnityEditor;
 using UnityEngine;
 
-namespace SOConstantsGenerator;
+namespace SOConstantsGenerator.Editor;
 
 public static class ConstantsGeneratorHelper
 {
