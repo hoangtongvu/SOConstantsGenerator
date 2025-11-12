@@ -1,0 +1,16 @@
+{
+  "name": "com.darksun.so-constants-generator",
+  "description": "A SO constants generator for Unity.",
+  "version": "1.0.0",
+  "unity": "6.2",
+  "displayName": "SOConstantsGenerator",
+  "dependencies": {
+  },
+  "keywords": [
+    "constants",
+    "ScriptableObject"
+  ],
+  "author": {
+    "name": "hoangtongvu"
+  }
+}
