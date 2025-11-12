@@ -2,7 +2,7 @@
   "name": "com.darksun.so-constants-generator",
   "description": "A SO constants generator for Unity.",
   "version": "1.0.0",
-  "unity": "6.2",
+  "unity": "2022.3",
   "displayName": "SOConstantsGenerator",
   "dependencies": {
   },
