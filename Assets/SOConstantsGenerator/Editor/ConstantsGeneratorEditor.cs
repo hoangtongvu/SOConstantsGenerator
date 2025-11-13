@@ -18,20 +18,45 @@ public class ConstantsGeneratorEditor : UnityEditor.Editor
         if (generateAttr == null)
             return;
 
-        if (GUILayout.Button("Generate Constants"))
+        if (GUILayout.Button(new GUIContent("Generate Dynamic Fields", "Generate static read-only and dynamic loading fields. No need to regenerate except when the SO's InstanceID changed.\n<b>This is NOT Burst-compilable</b>.")))
         {
-            GenerateConstants(target, generateAttr);
+            GenerateDynamicFields(target, targetType, generateAttr);
+        }
+
+        if (GUILayout.Button(new GUIContent("Generate Constants", "Generate mix of constant (primitive) and static read-only (unmanaged struct) fields. Have to regenerate every time the fields changed.\n<b>This is Burst-compilable</b>.")))
+        {
+            GenerateConstants(target, targetType, generateAttr);
         }
     }
 
-    private void GenerateConstants(Object so, GenerateConstantsForAttribute generateConstantsForAttribute)
+    private void GenerateDynamicFields(Object so, System.Type soType, GenerateConstantsForAttribute generateConstantsForAttribute)
     {
         var className = generateConstantsForAttribute.ConstHolderClassName;
         var classNamespace = generateConstantsForAttribute.ConstHolderClassNamespace;
-        var type = so.GetType();
+        var outputPath = GetOutputPath(className, so, soType);
 
+        GenerateDynamicFieldsFile(outputPath, so, soType, className, classNamespace);
+
+        AssetDatabase.Refresh();
+        Debug.Log("Generated dynamic fields: " + outputPath);
+    }
+
+    private void GenerateConstants(Object so, System.Type soType, GenerateConstantsForAttribute generateConstantsForAttribute)
+    {
+        var className = generateConstantsForAttribute.ConstHolderClassName;
+        var classNamespace = generateConstantsForAttribute.ConstHolderClassNamespace;
+        var outputPath = GetOutputPath(className, so, soType);
+
+        GenerateConstantsFile(outputPath, so, className, classNamespace);
+
+        AssetDatabase.Refresh();
+        Debug.Log("Generated constants: " + outputPath);
+    }
+
+    private static string GetOutputPath(string className, Object so, System.Type soType)
+    {
         // Look for the target assembly field
-        var outputFolderField = type.GetField("OutputFolder", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        var outputFolderField = soType.GetField("OutputFolder", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         string folder = null;
 
         if (outputFolderField != null)
@@ -44,19 +69,14 @@ public class ConstantsGeneratorEditor : UnityEditor.Editor
 
         // fallback to script directory if no asmdef is assigned
         if (string.IsNullOrEmpty(folder))
-            folder = Path.GetDirectoryName(GetScriptPath(type));
+            folder = Path.GetDirectoryName(GetScriptPath(so));
 
-        var outputPath = Path.Combine(folder, className + ".cs");
-
-        GenerateFile(outputPath, so, className, classNamespace);
-
-        AssetDatabase.Refresh();
-        Debug.Log("Generated constants: " + outputPath);
+        return Path.Combine(folder, className + ".cs");
     }
 
-    private string GetScriptPath(System.Type type)
+    private static string GetScriptPath(Object so)
     {
-        var script = MonoScript.FromScriptableObject((ScriptableObject)target);
+        var script = MonoScript.FromScriptableObject((ScriptableObject)so);
         return AssetDatabase.GetAssetPath(script);
     }
 }

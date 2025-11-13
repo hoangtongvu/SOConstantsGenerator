@@ -9,7 +9,50 @@ namespace SOConstantsGenerator.Editor;
 
 public static class ConstantsGeneratorHelper
 {
-    public static void GenerateFile(string outputPath, Object so, string className, string classNamespace)
+    public static void GenerateDynamicFieldsFile(string outputPath, Object so, System.Type soType, string className, string classNamespace)
+    {
+        var fields = soType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                         .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
+
+        using var writer = new StreamWriter(outputPath, false);
+
+        writer.WriteLine("// This file is auto-generated, do not change.");
+        writer.WriteLine($"using UnityEditor;");
+        writer.WriteLine();
+        writer.WriteLine($"namespace {classNamespace};");
+        writer.WriteLine();
+
+        writer.WriteLine("public static class " + className);
+        writer.WriteLine("{");
+
+        foreach (var field in fields)
+        {
+            var fieldType = field.FieldType;
+            var value = field.GetValue(so);
+
+            writer.WriteLine($"\tpublic static readonly {fieldType} {field.Name};");
+        }
+
+        writer.WriteLine();
+        writer.WriteLine($"\tstatic {className}()");
+        writer.WriteLine("\t{");
+
+        writer.WriteLine($"\t\tvar so = ({soType})EditorUtility.InstanceIDToObject({so.GetInstanceID()});");
+        foreach (var field in fields)
+        {
+            var fieldType = field.FieldType;
+            var value = field.GetValue(so);
+
+            writer.WriteLine($"\t\t{field.Name} = so.{field.Name};");
+        }
+
+        writer.WriteLine("\t}");
+
+        writer.WriteLine("}");
+        writer.Flush();
+    }
+
+    public static void GenerateConstantsFile(string outputPath, Object so, string className, string classNamespace)
     {
         var type = so.GetType();
         var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
