@@ -18,7 +18,7 @@ public class ConstantsGeneratorEditor : UnityEditor.Editor
         if (generateAttr == null)
             return;
 
-        if (GUILayout.Button(new GUIContent("Generate Dynamic Fields", "Generate static read-only and dynamic loading fields. No need to regenerate except when the SO's InstanceID changed.\n<b>This is NOT Burst-compilable</b>.")))
+        if (GUILayout.Button(new GUIContent("Generate Dynamic Fields", "Generate static and dynamic loading fields. No need to regenerate except when the SO's InstanceID changed.\n<b>This is NOT Burst-compilable, and Editor only</b>.")))
         {
             GenerateDynamicFields(target, targetType, generateAttr);
         }

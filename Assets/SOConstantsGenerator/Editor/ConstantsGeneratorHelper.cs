@@ -18,6 +18,7 @@ public static class ConstantsGeneratorHelper
 
         writer.WriteLine("// This file is auto-generated, do not change.");
         writer.WriteLine($"using UnityEditor;");
+        writer.WriteLine($"using UnityEngine;");
         writer.WriteLine();
         writer.WriteLine($"namespace {classNamespace};");
         writer.WriteLine();
@@ -30,11 +31,17 @@ public static class ConstantsGeneratorHelper
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
 
-            writer.WriteLine($"\tpublic static readonly {fieldType} {field.Name};");
+            writer.WriteLine($"\tpublic static {fieldType} {field.Name};");
         }
 
         writer.WriteLine();
-        writer.WriteLine($"\tstatic {className}()");
+        writer.WriteLine("#if UNITY_EDITOR");
+        writer.WriteLine("\t[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]");
+        writer.WriteLine("\tpublic static void OnLoad() => LoadStaticFields();");
+        writer.WriteLine("#endif");
+
+        writer.WriteLine();
+        writer.WriteLine($"\tprivate static void LoadStaticFields()");
         writer.WriteLine("\t{");
 
         writer.WriteLine($"\t\tvar so = ({soType})EditorUtility.InstanceIDToObject({so.GetInstanceID()});");
