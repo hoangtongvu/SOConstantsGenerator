@@ -30,4 +30,9 @@ MonoBehaviour:
     G: 1.2
     AnotherHalf:
       value: 143
+  TestTypeList:
+  - Sf: 7
+    G: 78
+    AnotherHalf:
+      value: 123
   OutputFolder: {fileID: 102900000, guid: 98095e6036d389749819a8cadd0635a9, type: 3}
