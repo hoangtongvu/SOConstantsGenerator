@@ -47,7 +47,7 @@ public class ConstantsGeneratorEditor : UnityEditor.Editor
         var classNamespace = generateConstantsForAttribute.ConstHolderClassNamespace;
         var outputPath = GetOutputPath(className, so, soType);
 
-        GenerateConstantsFile(outputPath, so, className, classNamespace);
+        GenerateConstantsFile(outputPath, so, soType, className, classNamespace);
 
         AssetDatabase.Refresh();
         Debug.Log("Generated constants: " + outputPath);

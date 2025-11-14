@@ -1,9 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Unity.Collections.LowLevel.Unsafe;
-using UnityEditor;
 using UnityEngine;
+using static SOConstantsGenerator.Editor.Utilities;
 
 namespace SOConstantsGenerator.Editor;
 
@@ -13,68 +14,116 @@ public static class ConstantsGeneratorHelper
     {
         var fields = soType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                          .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
+        var arrayFieldInfoList = new List<MyFieldInfo>();
 
+        int indentLevel = 0;
         using var writer = new StreamWriter(outputPath, false);
+        void AddLine(string line) => writer.WriteLine(new string(' ', indentLevel * 4) + line);
+        void AddEmptyLine() => writer.WriteLine();
 
-        writer.WriteLine("// This file is auto-generated, do not change.");
-        writer.WriteLine($"using UnityEditor;");
-        writer.WriteLine($"using UnityEngine;");
-        writer.WriteLine();
-        writer.WriteLine($"namespace {classNamespace};");
-        writer.WriteLine();
+        AddLine("// This file is auto-generated, do not change.");
+        AddLine($"using UnityEditor;");
+        AddLine($"using UnityEngine;");
+        AddEmptyLine();
+        AddLine($"namespace {classNamespace};");
+        AddEmptyLine();
 
-        writer.WriteLine("public static class " + className);
-        writer.WriteLine("{");
+        AddLine("public static class " + className);
+        AddLine("{");
+        indentLevel++;
 
+        // Generate Declarations
         foreach (var field in fields)
         {
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
 
-            writer.WriteLine($"\tpublic static {fieldType} {field.Name};");
+            if (value is IEnumerable enumerable)
+            {
+                // Handle Array/Lists
+                var elementType = fieldType.IsArray
+                    ? fieldType.GetElementType()
+                    : fieldType.GetGenericArguments()[0];
+                AddLine($"public static {elementType}[] {field.Name};");
+            }
+            else
+            {
+                // Handle normal structs
+                AddLine($"public static {fieldType} {field.Name};");
+            }
         }
 
-        writer.WriteLine();
-        writer.WriteLine("#if UNITY_EDITOR");
-        writer.WriteLine("\t[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]");
-        writer.WriteLine("\tpublic static void OnLoad() => LoadStaticFields();");
-        writer.WriteLine("#endif");
+        indentLevel--;
+        AddEmptyLine();
+        AddLine("#if UNITY_EDITOR");
 
-        writer.WriteLine();
-        writer.WriteLine($"\tprivate static void LoadStaticFields()");
-        writer.WriteLine("\t{");
+        indentLevel++;
+        AddLine("[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]");
+        AddLine("public static void OnLoad() => LoadStaticFields();");
+        indentLevel--;
+        AddLine("#endif");
 
-        writer.WriteLine($"\t\tvar so = ({soType})EditorUtility.InstanceIDToObject({so.GetInstanceID()});");
+        AddEmptyLine();
+        indentLevel++;
+        AddLine($"private static void LoadStaticFields()");
+        AddLine("{");
+
+        indentLevel++;
+        AddLine($"var so = ({soType})EditorUtility.InstanceIDToObject({so.GetInstanceID()});");
+
+        // Generate Assignments
         foreach (var field in fields)
         {
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
 
-            writer.WriteLine($"\t\t{field.Name} = so.{field.Name};");
+            if (value is IEnumerable enumerable)
+            {
+                // Handle Array/Lists
+                arrayFieldInfoList.Add(new()
+                {
+                    Name = field.Name,
+                    Type = fieldType,
+                    Value = value,
+                });
+            }
+            else
+            {
+                // Handle normal structs
+                AddLine($"{field.Name} = so.{field.Name};");
+            }
         }
 
-        writer.WriteLine("\t}");
+        writer.Write(ConstantArraysGeneratorHelper.GetDynamicAssignments(indentLevel, arrayFieldInfoList));
 
-        writer.WriteLine("}");
+        indentLevel--;
+        AddLine("}");
+
+        indentLevel--;
+        AddLine("}");
         writer.Flush();
     }
 
-    public static void GenerateConstantsFile(string outputPath, Object so, string className, string classNamespace)
+    public static void GenerateConstantsFile(string outputPath, Object so, System.Type soType, string className, string classNamespace)
     {
-        var type = so.GetType();
-        var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+        var fields = soType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                          .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
+        var arrayFieldInfoList = new List<MyFieldInfo>();
 
+        int indentLevel = 0;
         using var writer = new StreamWriter(outputPath, false);
+        void AddLine(string line) => writer.WriteLine(new string(' ', indentLevel * 4) + line);
+        void AddEmptyLine() => writer.WriteLine();
 
-        writer.WriteLine("// This file is auto-generated, do not change.");
-        writer.WriteLine($"using System.Runtime.CompilerServices;");
-        writer.WriteLine();
-        writer.WriteLine($"namespace {classNamespace};");
-        writer.WriteLine();
+        AddLine("// This file is auto-generated, do not change.");
+        AddLine($"using System.Runtime.CompilerServices;");
+        AddEmptyLine();
+        AddLine($"namespace {classNamespace};");
+        AddEmptyLine();
 
-        writer.WriteLine("public static class " + className);
-        writer.WriteLine("{");
+        AddLine("public static class " + className);
+        AddLine("{");
+        indentLevel++;
 
         foreach (var field in fields)
         {
@@ -83,84 +132,38 @@ public static class ConstantsGeneratorHelper
 
             if (CanBeConst(fieldType))
             {
-                // Write const
-                writer.WriteLine($"\tpublic const {fieldType} {field.Name} = {FormatValue(value)};");
+                // Handle constants
+                AddLine($"public const {fieldType} {field.Name} = {FormatValue(value)};");
             }
             else
             {
-                // Write static readonly
-                byte[] data = ExtractStructBytes(fieldType, value);
-                string bytesString = string.Join(", ", data.Select(b => b.ToString()));
-
-                writer.WriteLine($"\tpublic static readonly {fieldType} {field.Name} =");
-                writer.WriteLine($"\t\tUnsafe.As<byte, {fieldType}>(ref new byte[] {{ {bytesString} }}[0]);");
+                // Handle static readonly
+                if (value is IEnumerable enumerable)
+                {
+                    // Handle Array/Lists
+                    arrayFieldInfoList.Add(new()
+                    {
+                        Name = field.Name,
+                        Type = fieldType,
+                        Value = value,
+                    });
+                }
+                else
+                {
+                    // Handle normal structs
+                    var bytesString = BoxedStructToBytesString(fieldType, value);
+                    AddLine($"public static readonly {fieldType} {field.Name} =");
+                    indentLevel++;
+                    AddLine($"Unsafe.As<byte, {fieldType}>(ref new byte[] {{ {bytesString} }}[0]);");
+                    indentLevel--;
+                }
             }
         }
 
-        writer.WriteLine("}");
+        writer.Write(ConstantArraysGeneratorHelper.GetHardCodedArraysInitialization(indentLevel, arrayFieldInfoList));
+
+        indentLevel--;
+        AddLine("}");
         writer.Flush();
-    }
-
-    private static bool CanBeConst(System.Type t)
-    {
-        return t == typeof(int)
-            || t == typeof(float)
-            || t == typeof(double)
-            || t == typeof(bool)
-            || t == typeof(string)
-            || t == typeof(char)
-            || t == typeof(byte)
-            || t == typeof(sbyte)
-            || t == typeof(short)
-            || t == typeof(ushort)
-            || t == typeof(uint)
-            || t == typeof(long)
-            || t == typeof(ulong);
-    }
-
-    private static string FormatStructInitializer(object value, System.Type type)
-    {
-        var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
-
-        // Example result:
-        // new MyStruct { A = 1, B = 2f, C = "Hello" }
-        var assignments = string.Join(", ",
-            fields.Select(f => $"{f.Name} = {FormatValue(f.GetValue(value))}"));
-
-        return $"new {type.Name} {{ {assignments} }}";
-    }
-
-    private static string FormatValue(object value)
-    {
-        return value switch
-        {
-            string s => $"\"{s}\"",
-            float f => f.ToString("0.######") + "f",
-            double d => d.ToString("0.######"),
-            _ => value.ToString()
-        };
-    }
-
-    public static byte[] ExtractStructBytes(System.Type type, object value)
-    {
-        var method = typeof(ConstantsGeneratorHelper).GetMethod(nameof(StructToBytes), BindingFlags.Static | BindingFlags.Public);
-        var generic = method.MakeGenericMethod(type);
-        return (byte[])generic.Invoke(null, new object[] { value });
-    }
-
-    public static byte[] StructToBytes<T>(T value) where T : struct
-    {
-        int size = UnsafeUtility.SizeOf<T>();
-        byte[] bytes = new byte[size];
-
-        unsafe
-        {
-            fixed (byte* destPtr = bytes)
-            {
-                UnsafeUtility.MemCpy(destPtr, UnsafeUtility.AddressOf(ref value), size);
-            }
-        }
-
-        return bytes;
     }
 }

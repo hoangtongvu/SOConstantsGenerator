@@ -1,4 +1,5 @@
 using SOConstantsGenerator;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
@@ -13,5 +14,7 @@ namespace SOConstGenerator
         [ConstantField] public int MaxLives = 3;
         [ConstantField] public half TestType0;
         [ConstantField] public TestType TestType1;
+        [ConstantField] public TestType[] TestTypeArray;
+        [ConstantField] public List<TestType> TestTypeList;
     }
 }
