@@ -1,7 +1,8 @@
+using AYellowpaper.SerializedCollections;
+using Cores;
 using SOConstantsGenerator;
 using System.Collections.Generic;
 using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 
 namespace SOConstGenerator
@@ -16,5 +17,9 @@ namespace SOConstGenerator
         [ConstantField] public TestType TestType1;
         [ConstantField] public TestType[] TestTypeArray;
         [ConstantField] public List<TestType> TestTypeList;
+
+        [ConstantField]
+        [SerializedDictionary("Id", "Profile")]
+        public SerializedDictionary<TestProfileId, TestProfile> Profiles;
     }
 }

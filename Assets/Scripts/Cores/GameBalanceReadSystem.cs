@@ -1,3 +1,4 @@
+using Cores;
 using Unity.Burst;
 using Unity.Entities;
 using UnityEngine;
@@ -33,6 +34,18 @@ namespace Core
                 Debug.Log($"[{count}] {testType.AnotherHalf.value}");
                 count++;
             }
+
+            Debug.Log($"HashMap:");
+            count = 0;
+            foreach (var value in GameBalance.Profiles.Values)
+            {
+                Debug.Log($"[{count}] {value.Data0} - {value.Data1}");
+                count++;
+            }
+
+            var key = new TestProfileId { UnitType = 0, VariantIndex = 1 };
+            GameBalance.Profiles.TryGetValue(key, out var profile);
+            Debug.Log($"Key: {key} - Value: {profile.Data0} - {profile.Data1}");
         }
 
         [BurstCompile]

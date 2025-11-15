@@ -10,6 +10,7 @@ public class DynamicFieldProcessor
 
     public DynamicFieldProcessor()
     {
+        fieldHandlers.Add(new HashMapDynamicFieldHandler());
         fieldHandlers.Add(new ArrayDynamicFieldHandler());
         fieldHandlers.Add(new ListDynamicFieldHandler());
         fieldHandlers.Add(new NormalDynamicFieldHandler());

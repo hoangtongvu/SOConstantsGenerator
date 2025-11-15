@@ -10,6 +10,7 @@ public class ConstantFieldProcessor
 
     public ConstantFieldProcessor()
     {
+        fieldHandlers.Add(new HashMapConstantFieldHandler());
         fieldHandlers.Add(new ArrayConstantFieldHandler());
         fieldHandlers.Add(new ListConstantFieldHandler());
         fieldHandlers.Add(new NormalConstantFieldHandler());

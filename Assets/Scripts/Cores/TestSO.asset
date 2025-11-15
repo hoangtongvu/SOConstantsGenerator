@@ -35,4 +35,24 @@ MonoBehaviour:
     G: 78
     AnotherHalf:
       value: 123
+  Profiles:
+    _serializedList:
+    - Key:
+        UnitType: 0
+        VariantIndex: 0
+      Value:
+        Data0: 1
+        Data1: 1.2
+    - Key:
+        UnitType: 1
+        VariantIndex: 0
+      Value:
+        Data0: 2
+        Data1: 2.3
+    - Key:
+        UnitType: 0
+        VariantIndex: 1
+      Value:
+        Data0: 3
+        Data1: 3.4
   OutputFolder: {fileID: 102900000, guid: 98095e6036d389749819a8cadd0635a9, type: 3}
