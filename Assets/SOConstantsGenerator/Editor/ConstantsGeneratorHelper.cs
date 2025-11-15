@@ -1,6 +1,6 @@
+using SOConstantsGenerator.Editor.Common;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -16,21 +16,18 @@ public static class ConstantsGeneratorHelper
                          .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
         var arrayFieldInfoList = new List<MyFieldInfo>();
 
-        int indentLevel = 0;
-        using var writer = new StreamWriter(outputPath, false);
-        void AddLine(string line) => writer.WriteLine(new string(' ', indentLevel * 4) + line);
-        void AddEmptyLine() => writer.WriteLine();
+        using var writer = new CodeWriter(new(outputPath, false));
 
-        AddLine("// This file is auto-generated, do not change.");
-        AddLine($"using UnityEditor;");
-        AddLine($"using UnityEngine;");
-        AddEmptyLine();
-        AddLine($"namespace {classNamespace};");
-        AddEmptyLine();
+        writer.WriteLine("// This file is auto-generated, do not change.");
+        writer.WriteLine("using UnityEditor;");
+        writer.WriteLine("using UnityEngine;");
+        writer.WriteLine();
+        writer.WriteLine($"namespace {classNamespace};");
+        writer.WriteLine();
 
-        AddLine("public static class " + className);
-        AddLine("{");
-        indentLevel++;
+        writer.WriteLine("public static class " + className);
+        writer.WriteLine("{");
+        writer.Indent();
 
         // Generate Declarations
         foreach (var field in fields)
@@ -44,32 +41,32 @@ public static class ConstantsGeneratorHelper
                 var elementType = fieldType.IsArray
                     ? fieldType.GetElementType()
                     : fieldType.GetGenericArguments()[0];
-                AddLine($"public static {elementType}[] {field.Name};");
+                writer.WriteLine($"public static {elementType}[] {field.Name};");
             }
             else
             {
                 // Handle normal structs
-                AddLine($"public static {fieldType} {field.Name};");
+                writer.WriteLine($"public static {fieldType} {field.Name};");
             }
         }
 
-        indentLevel--;
-        AddEmptyLine();
-        AddLine("#if UNITY_EDITOR");
+        writer.Unindent();
+        writer.WriteLine();
+        writer.WriteLine("#if UNITY_EDITOR");
 
-        indentLevel++;
-        AddLine("[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]");
-        AddLine("public static void OnLoad() => LoadStaticFields();");
-        indentLevel--;
-        AddLine("#endif");
+        writer.Indent();
+        writer.WriteLine("[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]");
+        writer.WriteLine("public static void OnLoad() => LoadStaticFields();");
+        writer.Unindent();
+        writer.WriteLine("#endif");
 
-        AddEmptyLine();
-        indentLevel++;
-        AddLine($"private static void LoadStaticFields()");
-        AddLine("{");
+        writer.WriteLine();
+        writer.Indent();
+        writer.WriteLine($"private static void LoadStaticFields()");
+        writer.WriteLine("{");
 
-        indentLevel++;
-        AddLine($"var so = ({soType})EditorUtility.InstanceIDToObject({so.GetInstanceID()});");
+        writer.Indent();
+        writer.WriteLine($"var so = ({soType})EditorUtility.InstanceIDToObject({so.GetInstanceID()});");
 
         // Generate Assignments
         foreach (var field in fields)
@@ -90,17 +87,17 @@ public static class ConstantsGeneratorHelper
             else
             {
                 // Handle normal structs
-                AddLine($"{field.Name} = so.{field.Name};");
+                writer.WriteLine($"{field.Name} = so.{field.Name};");
             }
         }
 
-        writer.Write(ConstantArraysGeneratorHelper.GetDynamicAssignments(indentLevel, arrayFieldInfoList));
+        writer.Write(ConstantArraysGeneratorHelper.GetDynamicAssignments(writer.IndentLevel, arrayFieldInfoList));
 
-        indentLevel--;
-        AddLine("}");
+        writer.Unindent();
+        writer.WriteLine("}");
 
-        indentLevel--;
-        AddLine("}");
+        writer.Unindent();
+        writer.WriteLine("}");
         writer.Flush();
     }
 
@@ -110,20 +107,17 @@ public static class ConstantsGeneratorHelper
                          .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
         var arrayFieldInfoList = new List<MyFieldInfo>();
 
-        int indentLevel = 0;
-        using var writer = new StreamWriter(outputPath, false);
-        void AddLine(string line) => writer.WriteLine(new string(' ', indentLevel * 4) + line);
-        void AddEmptyLine() => writer.WriteLine();
+        using var writer = new CodeWriter(new(outputPath, false));
 
-        AddLine("// This file is auto-generated, do not change.");
-        AddLine($"using System.Runtime.CompilerServices;");
-        AddEmptyLine();
-        AddLine($"namespace {classNamespace};");
-        AddEmptyLine();
+        writer.WriteLine("// This file is auto-generated, do not change.");
+        writer.WriteLine($"using System.Runtime.CompilerServices;");
+        writer.WriteLine();
+        writer.WriteLine($"namespace {classNamespace};");
+        writer.WriteLine();
 
-        AddLine("public static class " + className);
-        AddLine("{");
-        indentLevel++;
+        writer.WriteLine("public static class " + className);
+        writer.WriteLine("{");
+        writer.Indent();
 
         foreach (var field in fields)
         {
@@ -133,7 +127,7 @@ public static class ConstantsGeneratorHelper
             if (CanBeConst(fieldType))
             {
                 // Handle constants
-                AddLine($"public const {fieldType} {field.Name} = {FormatValue(value)};");
+                writer.WriteLine($"public const {fieldType} {field.Name} = {FormatValue(value)};");
             }
             else
             {
@@ -152,18 +146,18 @@ public static class ConstantsGeneratorHelper
                 {
                     // Handle normal structs
                     var bytesString = BoxedStructToBytesString(fieldType, value);
-                    AddLine($"public static readonly {fieldType} {field.Name} =");
-                    indentLevel++;
-                    AddLine($"Unsafe.As<byte, {fieldType}>(ref new byte[] {{ {bytesString} }}[0]);");
-                    indentLevel--;
+                    writer.WriteLine($"public static readonly {fieldType} {field.Name} =");
+                    writer.Indent();
+                    writer.WriteLine($"Unsafe.As<byte, {fieldType}>(ref new byte[] {{ {bytesString} }}[0]);");
+                    writer.Unindent();
                 }
             }
         }
 
-        writer.Write(ConstantArraysGeneratorHelper.GetHardCodedArraysInitialization(indentLevel, arrayFieldInfoList));
+        writer.Write(ConstantArraysGeneratorHelper.GetHardCodedArraysInitialization(writer.IndentLevel, arrayFieldInfoList));
 
-        indentLevel--;
-        AddLine("}");
+        writer.Unindent();
+        writer.WriteLine("}");
         writer.Flush();
     }
 }
