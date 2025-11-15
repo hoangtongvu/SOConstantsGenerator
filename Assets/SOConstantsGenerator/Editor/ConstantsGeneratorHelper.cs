@@ -1,10 +1,9 @@
 using SOConstantsGenerator.Editor.Common;
-using System.Collections;
-using System.Collections.Generic;
+using SOConstantsGenerator.Editor.FieldHandlers.Common;
+using SOConstantsGenerator.Editor.FieldProcessors;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using static SOConstantsGenerator.Editor.Utilities;
 
 namespace SOConstantsGenerator.Editor;
 
@@ -14,8 +13,7 @@ public static class ConstantsGeneratorHelper
     {
         var fields = soType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                          .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
-        var arrayFieldInfoList = new List<MyFieldInfo>();
-
+        var fieldProcessor = new DynamicFieldProcessor();
         using var writer = new CodeWriter(new(outputPath, false));
 
         writer.WriteLine("// This file is auto-generated, do not change.");
@@ -35,25 +33,31 @@ public static class ConstantsGeneratorHelper
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
 
-            if (value is IEnumerable enumerable)
+            var fieldInfo = new MyFieldInfo
             {
-                // Handle Array/Lists
-                var elementType = fieldType.IsArray
-                    ? fieldType.GetElementType()
-                    : fieldType.GetGenericArguments()[0];
-                writer.WriteLine($"public static {elementType}[] {field.Name};");
-            }
-            else
+                Name = field.Name,
+                Type = fieldType,
+                Value = value,
+            };
+
+            var canHandleInput = new CanHandleInput
             {
-                // Handle normal structs
-                writer.WriteLine($"public static {fieldType} {field.Name};");
-            }
+                FieldInfo = fieldInfo,
+            };
+
+            var handleInput = new HandleInput
+            {
+                Writer = writer,
+                FieldInfo = fieldInfo,
+            };
+
+            fieldProcessor.ProcessDeclaration(canHandleInput, handleInput);
         }
 
         writer.Unindent();
         writer.WriteLine();
-        writer.WriteLine("#if UNITY_EDITOR");
 
+        writer.WriteLine("#if UNITY_EDITOR");
         writer.Indent();
         writer.WriteLine("[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]");
         writer.WriteLine("public static void OnLoad() => LoadStaticFields();");
@@ -74,24 +78,26 @@ public static class ConstantsGeneratorHelper
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
 
-            if (value is IEnumerable enumerable)
+            var fieldInfo = new MyFieldInfo
             {
-                // Handle Array/Lists
-                arrayFieldInfoList.Add(new()
-                {
-                    Name = field.Name,
-                    Type = fieldType,
-                    Value = value,
-                });
-            }
-            else
-            {
-                // Handle normal structs
-                writer.WriteLine($"{field.Name} = so.{field.Name};");
-            }
-        }
+                Name = field.Name,
+                Type = fieldType,
+                Value = value,
+            };
 
-        writer.Write(ConstantArraysGeneratorHelper.GetDynamicAssignments(writer.IndentLevel, arrayFieldInfoList));
+            var canHandleInput = new CanHandleInput
+            {
+                FieldInfo = fieldInfo,
+            };
+
+            var handleInput = new HandleInput
+            {
+                Writer = writer,
+                FieldInfo = fieldInfo,
+            };
+
+            fieldProcessor.ProcessAssignment(canHandleInput, handleInput);
+        }
 
         writer.Unindent();
         writer.WriteLine("}");
@@ -105,8 +111,7 @@ public static class ConstantsGeneratorHelper
     {
         var fields = soType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                          .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
-        var arrayFieldInfoList = new List<MyFieldInfo>();
-
+        var fieldProcessor = new ConstantFieldProcessor();
         using var writer = new CodeWriter(new(outputPath, false));
 
         writer.WriteLine("// This file is auto-generated, do not change.");
@@ -124,37 +129,26 @@ public static class ConstantsGeneratorHelper
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
 
-            if (CanBeConst(fieldType))
+            var fieldInfo = new MyFieldInfo
             {
-                // Handle constants
-                writer.WriteLine($"public const {fieldType} {field.Name} = {FormatValue(value)};");
-            }
-            else
-            {
-                // Handle static readonly
-                if (value is IEnumerable enumerable)
-                {
-                    // Handle Array/Lists
-                    arrayFieldInfoList.Add(new()
-                    {
-                        Name = field.Name,
-                        Type = fieldType,
-                        Value = value,
-                    });
-                }
-                else
-                {
-                    // Handle normal structs
-                    var bytesString = BoxedStructToBytesString(fieldType, value);
-                    writer.WriteLine($"public static readonly {fieldType} {field.Name} =");
-                    writer.Indent();
-                    writer.WriteLine($"Unsafe.As<byte, {fieldType}>(ref new byte[] {{ {bytesString} }}[0]);");
-                    writer.Unindent();
-                }
-            }
-        }
+                Name = field.Name,
+                Type = fieldType,
+                Value = value,
+            };
 
-        writer.Write(ConstantArraysGeneratorHelper.GetHardCodedArraysInitialization(writer.IndentLevel, arrayFieldInfoList));
+            var canHandleInput = new CanHandleInput
+            {
+                FieldInfo = fieldInfo,
+            };
+
+            var handleInput = new HandleInput
+            {
+                Writer = writer,
+                FieldInfo = fieldInfo,
+            };
+
+            fieldProcessor.Process(canHandleInput, handleInput);
+        }
 
         writer.Unindent();
         writer.WriteLine("}");
