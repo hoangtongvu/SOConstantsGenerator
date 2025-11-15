@@ -51,6 +51,10 @@ namespace Core
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            // Runtime test
+            if (!Input.GetKeyDown(KeyCode.D)) return;
+
+            Debug.Log($"PlayerBaseSpeed: {GameBalance.PlayerBaseSpeed}");
         }
     }
 }
