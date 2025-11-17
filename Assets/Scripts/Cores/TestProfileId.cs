@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Unity.Collections;
 
 namespace Cores;
 
@@ -29,5 +30,10 @@ public struct TestProfileId : IEquatable<TestProfileId>
     public override string ToString()
     {
         return $"{nameof(UnitType)}: {UnitType}, {nameof(VariantIndex)}: {VariantIndex}";
+    }
+
+    public readonly FixedString32Bytes ToFixedString()
+    {
+        return $"{UnitType}, {VariantIndex}";
     }
 }

@@ -17,6 +17,7 @@ public static class ConstantsGeneratorHelper
         using var writer = new CodeWriter(new(outputPath, false));
 
         writer.WriteLine("// This file is auto-generated, do not change.");
+        writer.WriteLine("using System.Collections;");
         writer.WriteLine("using System.Collections.Generic;");
         writer.WriteLine("using System.Linq;");
         writer.WriteLine("using UnityEditor;");
@@ -117,7 +118,10 @@ public static class ConstantsGeneratorHelper
         using var writer = new CodeWriter(new(outputPath, false));
 
         writer.WriteLine("// This file is auto-generated, do not change.");
-        writer.WriteLine($"using System.Runtime.CompilerServices;");
+        writer.WriteLine("using System;");
+        writer.WriteLine("using System.Collections;");
+        writer.WriteLine("using System.Collections.Generic;");
+        writer.WriteLine("using System.Runtime.CompilerServices;");
         writer.WriteLine();
         writer.WriteLine($"namespace {classNamespace};");
         writer.WriteLine();

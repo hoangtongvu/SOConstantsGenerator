@@ -1,4 +1,7 @@
 // This file is auto-generated, do not change.
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Core;
@@ -35,6 +38,24 @@ public static class GameBalance
             Unsafe.As<byte, Cores.TestProfile>(ref new byte[] { 2, 0, 0, 0, 51, 51, 19, 64 }[0]),
             Unsafe.As<byte, Cores.TestProfile>(ref new byte[] { 3, 0, 0, 0, 154, 153, 89, 64 }[0]),
         };
+        public static readonly t_Enumerable Enumerable;
+        public struct t_Enumerable : IEnumerable<KeyValuePair<Cores.TestProfileId, Cores.TestProfile>>
+        {
+            public Enumerator GetEnumerator() => new();
+            IEnumerator<KeyValuePair<Cores.TestProfileId, Cores.TestProfile>> IEnumerable<KeyValuePair<Cores.TestProfileId, Cores.TestProfile>>.GetEnumerator() { throw new NotImplementedException(); }
+            IEnumerator IEnumerable.GetEnumerator() { throw new NotImplementedException(); }
+        }
+        public struct Enumerator : IEnumerator<KeyValuePair<Cores.TestProfileId, Cores.TestProfile>>
+        {
+            private int index = -1;
+            public KeyValuePair<Cores.TestProfileId, Cores.TestProfile> Current => new(Keys[this.index], Values[this.index]);
+            object IEnumerator.Current => Current;
+            public Enumerator() { }
+            public void Dispose() { }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext() { index++; return index < Count; }
+            public void Reset() => this.index = -1;
+        }
         public static bool TryGetValue(Cores.TestProfileId key, out Cores.TestProfile value)
         {
             int keyHash = key.GetHashCode();

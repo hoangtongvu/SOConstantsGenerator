@@ -12,40 +12,7 @@ namespace Core
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            Debug.Log($"{GameBalance.TestType0.value}");
-            Debug.Log($"{GameBalance.TestType1.Sf + 5}");
-            Debug.Log($"{GameBalance.TestType1.G}");
-            Debug.Log($"{GameBalance.TestType1.AnotherHalf.value}");
-
-            Debug.Log($"Array:");
-            int count = 0;
-            foreach (var testType in GameBalance.TestTypeArray)
-            {
-                Debug.Log($"[{count}] {testType.G}");
-                Debug.Log($"[{count}] {testType.AnotherHalf.value}");
-                count++;
-            }
-
-            Debug.Log($"List:");
-            count = 0;
-            foreach (var testType in GameBalance.TestTypeList)
-            {
-                Debug.Log($"[{count}] {testType.G}");
-                Debug.Log($"[{count}] {testType.AnotherHalf.value}");
-                count++;
-            }
-
-            Debug.Log($"HashMap:");
-            count = 0;
-            foreach (var value in GameBalance.Profiles.Values)
-            {
-                Debug.Log($"[{count}] {value.Data0} - {value.Data1}");
-                count++;
-            }
-
-            var key = new TestProfileId { UnitType = 0, VariantIndex = 1 };
-            GameBalance.Profiles.TryGetValue(key, out var profile);
-            Debug.Log($"Key: {key} - Value: {profile.Data0} - {profile.Data1}");
+            this.Log();
         }
 
         [BurstCompile]
@@ -53,8 +20,43 @@ namespace Core
         {
             // Runtime test
             if (!Input.GetKeyDown(KeyCode.D)) return;
+            this.Log();
+        }
 
-            Debug.Log($"PlayerBaseSpeed: {GameBalance.PlayerBaseSpeed}");
+        [BurstCompile]
+        private void Log()
+        {
+            Debug.Log("___________________________________________________________");
+            Debug.Log($"{GameBalance.TestType0.value}");
+            Debug.Log($"{GameBalance.TestType1.ToFixedString()}");
+
+            Debug.Log($"<b>Array:</b>");
+            int count = 0;
+            foreach (var testType in GameBalance.TestTypeArray)
+            {
+                Debug.Log($"[{count}] {testType.ToFixedString()}");
+                count++;
+            }
+
+            Debug.Log($"<b>List:</b>");
+            count = 0;
+            foreach (var testType in GameBalance.TestTypeList)
+            {
+                Debug.Log($"[{count}] {testType.ToFixedString()}");
+                count++;
+            }
+
+            Debug.Log($"<b>HashMap:</b>");
+            count = 0;
+            foreach (var kvPair in GameBalance.Profiles.Enumerable)
+            {
+                Debug.Log($"[{count}] K[{kvPair.Key.ToFixedString()}] - V[{kvPair.Value.ToFixedString()}]");
+                count++;
+            }
+
+            var key = new TestProfileId { UnitType = 0, VariantIndex = 1 };
+            GameBalance.Profiles.TryGetValue(key, out var profile);
+            Debug.Log($"K[{key.ToFixedString()}] - V[{profile.ToFixedString()}]");
         }
     }
 }

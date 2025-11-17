@@ -39,6 +39,7 @@ public class HashMapDynamicFieldHandler : IDynamicFieldHandler
         writer.WriteLine($"public static int Count;");
         writer.WriteLine($"public static {keyType}[] Keys;");
         writer.WriteLine($"public static {valueType}[] Values;");
+        GenerateEnumerableProperty(writer, keyType, valueType);
         GenerateTryGetValue(writer, keyType, valueType);
         GenerateGetValue(writer, keyType, valueType);
         GenerateContainsKey(writer, keyType);
@@ -59,6 +60,22 @@ public class HashMapDynamicFieldHandler : IDynamicFieldHandler
         writer.WriteLine($"{fieldInfo.Name}.Count = so.{fieldInfo.Name}.Count;");
         writer.WriteLine($"{fieldInfo.Name}.Keys = so.{fieldInfo.Name}.Keys.ToArray();");
         writer.WriteLine($"{fieldInfo.Name}.Values = so.{fieldInfo.Name}.Values.ToArray();");
+    }
+
+    private static void GenerateEnumerableProperty(CodeWriter writer, Type keyType, Type valueType)
+    {
+        // Generate Enumerable
+        writer.WriteLine("public static readonly t_Enumerable Enumerable;");
+
+        writer.WriteLine($"public struct t_Enumerable : IEnumerable<KeyValuePair<{keyType}, {valueType}>>");
+        writer.WriteLine("{");
+        writer.Indent();
+
+        writer.WriteLine($"public IEnumerator<KeyValuePair<{keyType}, {valueType}>> GetEnumerator() => _InternalDictionary.GetEnumerator();");
+        writer.WriteLine("IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();");
+
+        writer.Unindent();
+        writer.WriteLine("}");
     }
 
     private static void GenerateTryGetValue(CodeWriter writer, Type keyType, Type valueType)

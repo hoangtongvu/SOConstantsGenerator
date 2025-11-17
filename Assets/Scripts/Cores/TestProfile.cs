@@ -1,3 +1,4 @@
+using Unity.Collections;
 
 namespace Cores;
 
@@ -7,8 +8,8 @@ public struct TestProfile
     public int Data0;
     public float Data1;
 
-    public override string ToString()
+    public readonly FixedString32Bytes ToFixedString()
     {
-        return $"Data0: {Data0}, Data1: {Data1}";
+        return $"{Data0}, {Data1}";
     }
 }

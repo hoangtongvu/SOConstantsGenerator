@@ -39,6 +39,7 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         GenerateCount(writer);
         GenerateKeyArray(writer, keyType);
         GenerateValueArray(writer, valueType);
+        GenerateEnumerableProperty(writer, keyType, valueType);
         GenerateTryGetValue(writer, keyType, valueType);
         GenerateGetValue(writer, keyType, valueType);
         GenerateContainsKey(writer, keyType);
@@ -46,6 +47,11 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
 
         writer.Unindent();
         writer.WriteLine("}");
+    }
+
+    private void GenerateCount(CodeWriter writer)
+    {
+        writer.WriteLine($"public const int Count = {this.dictionary.Count};");
     }
 
     private void GenerateKeyArray(CodeWriter writer, Type keyType)
@@ -80,9 +86,39 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         writer.WriteLine("};");
     }
 
-    private void GenerateCount(CodeWriter writer)
+    private static void GenerateEnumerableProperty(CodeWriter writer, Type keyType, Type valueType)
     {
-        writer.WriteLine($"public const int Count = {this.dictionary.Count};");
+        // Generate Enumerable
+        writer.WriteLine("public static readonly t_Enumerable Enumerable;");
+
+        writer.WriteLine($"public struct t_Enumerable : IEnumerable<KeyValuePair<{keyType}, {valueType}>>");
+        writer.WriteLine("{");
+        writer.Indent();
+
+        writer.WriteLine("public Enumerator GetEnumerator() => new();");
+        writer.WriteLine($"IEnumerator<KeyValuePair<{keyType}, {valueType}>> IEnumerable<KeyValuePair<{keyType}, {valueType}>>.GetEnumerator() {{ throw new NotImplementedException(); }}");
+        writer.WriteLine($"IEnumerator IEnumerable.GetEnumerator() {{ throw new NotImplementedException(); }}");
+
+        writer.Unindent();
+        writer.WriteLine("}");
+
+        // Generate Enumerator
+        writer.WriteLine($"public struct Enumerator : IEnumerator<KeyValuePair<{keyType}, {valueType}>>");
+        writer.WriteLine("{");
+        writer.Indent();
+
+        writer.WriteLine("private int index = -1;");
+        writer.WriteLine($"public KeyValuePair<{keyType}, {valueType}> Current => new(Keys[this.index], Values[this.index]);");
+        writer.WriteLine("object IEnumerator.Current => Current;");
+        writer.WriteLine("public Enumerator() { }");
+        writer.WriteLine("public void Dispose() { }");
+
+        writer.WriteLine("[MethodImpl(MethodImplOptions.AggressiveInlining)]");
+        writer.WriteLine("public bool MoveNext() { index++; return index < Count; }");
+        writer.WriteLine("public void Reset() => this.index = -1;");
+
+        writer.Unindent();
+        writer.WriteLine("}");
     }
 
     private void GenerateTryGetValue(CodeWriter writer, Type keyType, Type valueType)
