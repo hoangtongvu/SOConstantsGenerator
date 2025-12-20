@@ -1,23 +1,14 @@
 {
   "dependencies": {
-    "com.darksun.core.testing": {
-      "version": "https://github.com/hoangtongvu/com.darksun.core.testing.git",
+    "com.github-joc0de.visual-studio-solution-generator": {
+      "version": "https://github.com/hoangtongvu/UnityVisualStudioSolutionGenerator.git?path=/src/UnityVisualStudioSolutionGenerator/Assets#1.1.2",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.unity.entities": "1.2.0"
-      },
-      "hash": "24938d88e1535a5bfbd2d08dc84f7427ccd4c751"
-    },
-    "com.github-joc0de.visual-studio-solution-generator": {
-      "version": "1.1.0",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
         "com.unity.ide.visualstudio": "2.0.23",
-        "com.unity.settings-manager": "2.1.0"
+        "com.unity.settings-manager": "2.1.1"
       },
-      "url": "https://package.openupm.com"
+      "hash": "20284208f48a1e563768b7da1189a7fef5a18a2f"
     },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
@@ -100,16 +91,16 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.25",
+      "version": "2.0.23",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.test-framework": "1.1.31"
+        "com.unity.test-framework": "1.1.9"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.14.2",
+      "version": "1.16.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -217,7 +208,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.settings-manager": {
-      "version": "2.1.0",
+      "version": "2.1.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
