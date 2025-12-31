@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using SOConstantsGenerator.Common;
 using SOConstantsGenerator.FieldProcessors;
 using System.IO;
@@ -272,3 +273,4 @@ public static class ConstantsGeneratorHelper
         writer.Flush();
     }
 }
+#endif
