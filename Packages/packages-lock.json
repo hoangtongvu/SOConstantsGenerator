@@ -264,6 +264,13 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "today.comes.saintsfield": {
+      "version": "https://github.com/TylerTemp/SaintsField.git#5.7.6",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "364dd2bec08f20ef4e9e2af2a35565318b22ee69"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

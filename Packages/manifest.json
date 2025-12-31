@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.github-joc0de.visual-studio-solution-generator": "https://github.com/hoangtongvu/UnityVisualStudioSolutionGenerator.git?path=/src/UnityVisualStudioSolutionGenerator/Assets#1.1.2",
+	"today.comes.saintsfield": "https://github.com/TylerTemp/SaintsField.git#5.7.6",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.entities": "1.4.3",
     "com.unity.entities.graphics": "1.4.16",
