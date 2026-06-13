@@ -246,6 +246,9 @@ public static class ConstantsGeneratorHelper
         {
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
+            var converterType = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterType;
+
+            VerifyConverterType(ref converterType);
 
             var fieldInfo = new MyFieldInfo
             {
@@ -263,6 +266,7 @@ public static class ConstantsGeneratorHelper
             {
                 Writer = writer,
                 FieldInfo = fieldInfo,
+                ConverterType = converterType,
             };
 
             fieldProcessor.Process(canHandleInput, handleInput);
@@ -271,6 +275,23 @@ public static class ConstantsGeneratorHelper
         writer.Unindent();
         writer.WriteLine("}");
         writer.Flush();
+    }
+
+    private static void VerifyConverterType(ref System.Type converterType)
+    {
+        if (converterType == null) return;
+
+        bool valid = converterType
+            .GetInterfaces()
+            .Any(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == typeof(ITypeConverter<,>));
+
+        if (!valid)
+        {
+            converterType = null;
+            UnityEngine.Debug.LogError($"{converterType.Name} must implement ITypeConverter<,>");
+        }
     }
 }
 #endif

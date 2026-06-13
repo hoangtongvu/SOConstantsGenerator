@@ -13,7 +13,7 @@ public class ConstantFieldProcessor
         fieldHandlers.Add(new HashMapConstantFieldHandler());
         fieldHandlers.Add(new ArrayConstantFieldHandler());
         fieldHandlers.Add(new ListConstantFieldHandler());
-        fieldHandlers.Add(new UnmanagedConstantFieldHandler());
+        fieldHandlers.Add(new NormalConstantFieldHandler());
     }
 
     public void Process(CanHandleInput canHandleInput, HandleInput handleInput)

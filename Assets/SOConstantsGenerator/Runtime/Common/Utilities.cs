@@ -74,4 +74,34 @@ public static class Utilities
 
         return bytes;
     }
+
+    public static string GetCSharpFullName(System.Type type)
+    {
+        if (!type.IsNested)
+            return type.FullName ?? type.Name;
+
+        return $"{GetCSharpFullName(type.DeclaringType!)}.{type.Name}";
+    }
+
+    public static void GetSourceAndDestTypes(System.Type converterType, out System.Type sourceType, out System.Type destType)
+    {
+        sourceType = null;
+        destType = null;
+
+        if (converterType == null) return;
+
+        var converterInterface = converterType
+            .GetInterfaces()
+            .FirstOrDefault(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == typeof(ITypeConverter<,>));
+
+        if (converterInterface != null)
+        {
+            var args = converterInterface.GetGenericArguments();
+
+            sourceType = args[0];
+            destType = args[1];
+        }
+    }
 }
