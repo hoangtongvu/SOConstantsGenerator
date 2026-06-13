@@ -3,7 +3,7 @@ using static SOConstantsGenerator.Common.Utilities;
 
 namespace SOConstantsGenerator.FieldHandlers.ConstantFieldHandlers;
 
-public class NormalConstantFieldHandler : IConstantFieldHandler
+public class UnmanagedConstantFieldHandler : IConstantFieldHandler
 {
     public bool CanHandle(CanHandleInput canHandleInput)
     {
@@ -15,7 +15,7 @@ public class NormalConstantFieldHandler : IConstantFieldHandler
         var writer = handleInput.Writer;
         var fieldInfo = handleInput.FieldInfo;
 
-        if (CanBeConst(fieldInfo.Type))
+        if (CanBeUnmanagedConst(fieldInfo.Type))
         {
             // Handle constants
             writer.WriteLine($"public const {fieldInfo.Type} {fieldInfo.Name} = {FormatValue(fieldInfo.Value)};");

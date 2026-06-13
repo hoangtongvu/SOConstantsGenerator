@@ -7,13 +7,12 @@ namespace SOConstantsGenerator.Common;
 
 public static class Utilities
 {
-    public static bool CanBeConst(System.Type t)
+    public static bool CanBeUnmanagedConst(System.Type t)
     {
         return t == typeof(int)
             || t == typeof(float)
             || t == typeof(double)
             || t == typeof(bool)
-            || t == typeof(string)
             || t == typeof(char)
             || t == typeof(byte)
             || t == typeof(sbyte)
