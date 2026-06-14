@@ -246,9 +246,9 @@ public static class ConstantsGeneratorHelper
         {
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
-            var converterType = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterType;
+            var converterTypes = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterTypes;
 
-            VerifyConverterType(ref converterType);
+            VerifyConverterTypes(ref converterTypes);
 
             var fieldInfo = new MyFieldInfo
             {
@@ -266,7 +266,7 @@ public static class ConstantsGeneratorHelper
             {
                 Writer = writer,
                 FieldInfo = fieldInfo,
-                ConverterType = converterType,
+                ConverterTypes = converterTypes,
             };
 
             fieldProcessor.Process(canHandleInput, handleInput);
@@ -277,20 +277,27 @@ public static class ConstantsGeneratorHelper
         writer.Flush();
     }
 
-    private static void VerifyConverterType(ref System.Type converterType)
+    private static void VerifyConverterTypes(ref System.Type[] converterTypes)
     {
-        if (converterType == null) return;
+        if (converterTypes == null) return;
 
-        bool valid = converterType
-            .GetInterfaces()
-            .Any(i =>
-                i.IsGenericType &&
-                i.GetGenericTypeDefinition() == typeof(ITypeConverter<,>));
+        int count = converterTypes.Length;
 
-        if (!valid)
+        for (int i = 0; i < count; i++)
         {
-            converterType = null;
-            UnityEngine.Debug.LogError($"{converterType.Name} must implement ITypeConverter<,>");
+            var converterType = converterTypes[i];
+
+            bool valid = converterType
+                .GetInterfaces()
+                .Any(i =>
+                    i.IsGenericType &&
+                    i.GetGenericTypeDefinition() == typeof(ITypeConverter<,>));
+
+            if (!valid)
+            {
+                converterTypes[i] = null;
+                UnityEngine.Debug.LogError($"{converterType.Name} must implement ITypeConverter<,>");
+            }
         }
     }
 }

@@ -18,7 +18,8 @@ public class NormalConstantFieldHandler : IConstantFieldHandler
     {
         var writer = handleInput.Writer;
         var fieldInfo = handleInput.FieldInfo;
-        var converterType = handleInput.ConverterType;
+        var converterTypes = handleInput.ConverterTypes;
+        var converterType = converterTypes?[0];
 
         if (CanBeUnmanagedConst(fieldInfo.Type))
         {
@@ -116,7 +117,8 @@ public class NormalConstantFieldHandler : IConstantFieldHandler
 
                 foreach (var field in fields)
                 {
-                    var childConverterType = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterType;
+                    var childConverterTypes = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterTypes;
+                    var childConverterType = childConverterTypes?[0];
                     var valueLiteral = ToCodeLiteral(field.GetValue(o), field.FieldType, childConverterType);
 
                     sb.AppendLine($"{field.Name} = {valueLiteral},");

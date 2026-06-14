@@ -5,10 +5,14 @@ namespace SOConstantsGenerator;
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class ConstantFieldAttribute : Attribute
 {
-    public Type ConverterType {  get; }
+    public Type[] ConverterTypes {  get; }
 
-    public ConstantFieldAttribute(Type converter = null) : base()
+    public ConstantFieldAttribute(params Type[] converterTypes) : base()
     {
-        this.ConverterType = converter;
+        if (converterTypes == null) return;
+
+        this.ConverterTypes = converterTypes.Length == 0
+            ? null
+            : converterTypes;
     }
 }
