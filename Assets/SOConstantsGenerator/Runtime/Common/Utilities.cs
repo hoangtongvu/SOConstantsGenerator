@@ -137,7 +137,7 @@ public static class Utilities
         if (type.IsValueType)
         {
             var bytesString = BoxedStructToBytesString(type, o);
-            return $"Unsafe.As<byte, {type}>(ref new byte[] {{ {bytesString} }}[0])";
+            return $"Unsafe.As<byte, {GetCSharpFullName(type)}>(ref new byte[] {{ {bytesString} }}[0])";
         }
 
         // Handle classes w/wo converters

@@ -30,15 +30,18 @@ public class ListConstantFieldHandler : IConstantFieldHandler
         var writer = handleContext.Writer;
         var fieldInfo = handleContext.FieldInfo;
         var elementType = this.genericArguments[0];
+        var elementConverterType = handleContext.ConverterTypes?[0];
 
-        writer.WriteLine($"public static readonly {elementType}[] {fieldInfo.Name} = new {elementType}[]");
+        GetSourceAndDestTypes(elementConverterType, out _, out var destElementType);
+        destElementType ??= elementType;
+
+        writer.WriteLine($"public static readonly {GetCSharpFullName(destElementType)}[] {fieldInfo.Name} = new {GetCSharpFullName(destElementType)}[]");
         writer.WriteLine("{");
         writer.Indent();
 
         foreach (var element in enumerable)
         {
-            var bytesString = BoxedStructToBytesString(elementType, element);
-            writer.WriteLine($"Unsafe.As<byte, {elementType}>(ref new byte[] {{ {bytesString} }}[0]),");
+            writer.WriteLine($"{ToCodeLiteral(element, elementType, elementConverterType)},");
         }
 
         writer.Unindent();

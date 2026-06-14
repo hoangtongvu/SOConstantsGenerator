@@ -287,6 +287,8 @@ public static class ConstantsGeneratorHelper
         {
             var converterType = converterTypes[i];
 
+            if (converterType == null) continue;
+
             bool valid = converterType
                 .GetInterfaces()
                 .Any(i =>
