@@ -29,21 +29,31 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
     {
         var writer = handleContext.Writer;
         var fieldInfo = handleContext.FieldInfo;
+
         var keyType = this.genericArguments[0];
+        var keyConverterType = handleContext.ConverterTypes?[0];
+        GetSourceAndDestTypes(keyConverterType, out _, out var destKeyType);
+        destKeyType ??= keyType;
+        var destKeyFullName = GetCSharpFullName(destKeyType);
+
         var valueType = this.genericArguments[1];
+        var valueConverterType = handleContext.ConverterTypes?[1];
+        GetSourceAndDestTypes(valueConverterType, out _, out var destValueType);
+        destValueType ??= valueType;
+        var destValueFullName = GetCSharpFullName(destValueType);
 
         writer.WriteLine($"public struct {fieldInfo.Name}");
         writer.WriteLine("{");
         writer.Indent();
 
         GenerateCount(writer);
-        GenerateKeyArray(writer, keyType);
-        GenerateValueArray(writer, valueType);
-        GenerateEnumerableProperty(writer, keyType, valueType);
-        GenerateTryGetValue(writer, keyType, valueType);
-        GenerateGetValue(writer, keyType, valueType);
-        GenerateContainsKey(writer, keyType);
-        GenerateContainsValue(writer, valueType);
+        GenerateKeyArray(writer, keyType, keyConverterType, destKeyFullName);
+        GenerateValueArray(writer, valueType, valueConverterType, destValueFullName);
+        GenerateEnumerableProperty(writer, destKeyFullName, destValueFullName);
+        GenerateTryGetValue(writer, destKeyFullName, destValueFullName);
+        GenerateGetValue(writer, destKeyFullName, destValueFullName);
+        GenerateContainsKey(writer, destKeyFullName);
+        GenerateContainsValue(writer, destValueFullName);
 
         writer.Unindent();
         writer.WriteLine("}");
@@ -54,61 +64,61 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         writer.WriteLine($"public const int Count = {this.dictionary.Count};");
     }
 
-    private void GenerateKeyArray(CodeWriter writer, Type keyType)
+    private void GenerateKeyArray(CodeWriter writer, Type keyType, Type keyConverterType, string destKeyFullName)
     {
-        writer.WriteLine($"public static readonly {keyType}[] Keys = new {keyType}[]");
+        writer.WriteLine($"public static readonly {destKeyFullName}[] Keys = new {destKeyFullName}[]");
+
         writer.WriteLine("{");
         writer.Indent();
 
         foreach (var entry in this.dictionary.Keys)
         {
-            var bytesString = BoxedStructToBytesString(keyType, entry);
-            writer.WriteLine($"Unsafe.As<byte, {keyType}>(ref new byte[] {{ {bytesString} }}[0]),");
+            writer.WriteLine($"{ToCodeLiteral(entry, keyType, keyConverterType)},");
         }
 
         writer.Unindent();
         writer.WriteLine("};");
     }
 
-    private void GenerateValueArray(CodeWriter writer, Type valueType)
+    private void GenerateValueArray(CodeWriter writer, Type valueType, Type valueConverterType, string destValueFullName)
     {
-        writer.WriteLine($"public static readonly {valueType}[] Values = new {valueType}[]");
+        writer.WriteLine($"public static readonly {destValueFullName}[] Values = new {destValueFullName}[]");
+
         writer.WriteLine("{");
         writer.Indent();
 
         foreach (var entry in this.dictionary.Values)
         {
-            var bytesString = BoxedStructToBytesString(valueType, entry);
-            writer.WriteLine($"Unsafe.As<byte, {valueType}>(ref new byte[] {{ {bytesString} }}[0]),");
+            writer.WriteLine($"{ToCodeLiteral(entry, valueType, valueConverterType)},");
         }
 
         writer.Unindent();
         writer.WriteLine("};");
     }
 
-    private static void GenerateEnumerableProperty(CodeWriter writer, Type keyType, Type valueType)
+    private static void GenerateEnumerableProperty(CodeWriter writer, string destKeyFullName, string destValueFullName)
     {
         // Generate Enumerable
         writer.WriteLine("public static readonly t_Enumerable Enumerable;");
 
-        writer.WriteLine($"public struct t_Enumerable : IEnumerable<KeyValuePair<{keyType}, {valueType}>>");
+        writer.WriteLine($"public struct t_Enumerable : IEnumerable<KeyValuePair<{destKeyFullName}, {destValueFullName}>>");
         writer.WriteLine("{");
         writer.Indent();
 
         writer.WriteLine("public Enumerator GetEnumerator() => new();");
-        writer.WriteLine($"IEnumerator<KeyValuePair<{keyType}, {valueType}>> IEnumerable<KeyValuePair<{keyType}, {valueType}>>.GetEnumerator() {{ throw new NotImplementedException(); }}");
+        writer.WriteLine($"IEnumerator<KeyValuePair<{destKeyFullName}, {destValueFullName}>> IEnumerable<KeyValuePair<{destKeyFullName}, {destValueFullName}>>.GetEnumerator() {{ throw new NotImplementedException(); }}");
         writer.WriteLine($"IEnumerator IEnumerable.GetEnumerator() {{ throw new NotImplementedException(); }}");
 
         writer.Unindent();
         writer.WriteLine("}");
 
         // Generate Enumerator
-        writer.WriteLine($"public struct Enumerator : IEnumerator<KeyValuePair<{keyType}, {valueType}>>");
+        writer.WriteLine($"public struct Enumerator : IEnumerator<KeyValuePair<{destKeyFullName}, {destValueFullName}>>");
         writer.WriteLine("{");
         writer.Indent();
 
         writer.WriteLine("private int index = -1;");
-        writer.WriteLine($"public KeyValuePair<{keyType}, {valueType}> Current => new(Keys[this.index], Values[this.index]);");
+        writer.WriteLine($"public KeyValuePair<{destKeyFullName}, {destValueFullName}> Current => new(Keys[this.index], Values[this.index]);");
         writer.WriteLine("object IEnumerator.Current => Current;");
         writer.WriteLine("public Enumerator() { }");
         writer.WriteLine("public void Dispose() { }");
@@ -121,9 +131,9 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         writer.WriteLine("}");
     }
 
-    private void GenerateTryGetValue(CodeWriter writer, Type keyType, Type valueType)
+    private void GenerateTryGetValue(CodeWriter writer, string destKeyFullName, string destValueFullName)
     {
-        writer.WriteLine($"public static bool TryGetValue({keyType} key, out {valueType} value)");
+        writer.WriteLine($"public static bool TryGetValue({destKeyFullName} key, out {destValueFullName} value)");
         writer.WriteLine("{");
         writer.Indent();
 
@@ -153,9 +163,9 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         writer.WriteLine("}");
     }
 
-    private static void GenerateGetValue(CodeWriter writer, Type keyType, Type valueType)
+    private static void GenerateGetValue(CodeWriter writer, string destKeyFullName, string destValueFullName)
     {
-        writer.WriteLine($"public static {valueType} GetValue({keyType} key)");
+        writer.WriteLine($"public static {destValueFullName} GetValue({destKeyFullName} key)");
         writer.WriteLine("{");
         writer.Indent();
 
@@ -166,9 +176,9 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         writer.WriteLine("}");
     }
 
-    private void GenerateContainsKey(CodeWriter writer, Type keyType)
+    private void GenerateContainsKey(CodeWriter writer, string destKeyFullName)
     {
-        writer.WriteLine($"public static bool ContainsKey({keyType} key)");
+        writer.WriteLine($"public static bool ContainsKey({destKeyFullName} key)");
         writer.WriteLine("{");
         writer.Indent();
 
@@ -190,9 +200,9 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         writer.WriteLine("}");
     }
 
-    private static void GenerateContainsValue(CodeWriter writer, Type valueType)
+    private static void GenerateContainsValue(CodeWriter writer, string destValueFullName)
     {
-        writer.WriteLine($"public static bool ContainsValue({valueType} value)");
+        writer.WriteLine($"public static bool ContainsValue({destValueFullName} value)");
         writer.WriteLine("{");
         writer.Indent();
 
