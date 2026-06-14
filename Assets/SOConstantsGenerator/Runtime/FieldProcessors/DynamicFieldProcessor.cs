@@ -16,24 +16,24 @@ public class DynamicFieldProcessor
         fieldHandlers.Add(new NormalDynamicFieldHandler());
     }
 
-    public void ProcessDeclaration(CanHandleInput canHandleInput, HandleInput handleInput)
+    public void ProcessDeclaration(CanHandleContext canHandleContext, HandleContext handleContext)
     {
         foreach (var handler in fieldHandlers)
         {
-            if (!handler.CanHandle(canHandleInput)) continue;
+            if (!handler.CanHandle(canHandleContext)) continue;
 
-            handler.HandleDeclarationGeneration(handleInput);
+            handler.HandleDeclarationGeneration(handleContext);
             break;
         }
     }
 
-    public void ProcessAssignment(CanHandleInput canHandleInput, HandleInput handleInput)
+    public void ProcessAssignment(CanHandleContext canHandleContext, HandleContext handleContext)
     {
         foreach (var handler in fieldHandlers)
         {
-            if (!handler.CanHandle(canHandleInput)) continue;
+            if (!handler.CanHandle(canHandleContext)) continue;
 
-            handler.HandleAssignmentGeneration(handleInput);
+            handler.HandleAssignmentGeneration(handleContext);
             break;
         }
     }

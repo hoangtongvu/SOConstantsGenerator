@@ -8,9 +8,9 @@ public class ListDynamicFieldHandler : IDynamicFieldHandler
     private IEnumerable enumerable;
     private System.Type[] genericArguments;
 
-    public bool CanHandle(CanHandleInput canHandleInput)
+    public bool CanHandle(CanHandleContext canHandleContext)
     {
-        var fieldInfo = canHandleInput.FieldInfo;
+        var fieldInfo = canHandleContext.FieldInfo;
         var args = fieldInfo.Type.GetGenericArguments();
 
         if (fieldInfo.Value is IEnumerable enumerable &&
@@ -24,19 +24,19 @@ public class ListDynamicFieldHandler : IDynamicFieldHandler
         return false;
     }
 
-    public void HandleDeclarationGeneration(HandleInput handleInput)
+    public void HandleDeclarationGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
         var elementType = this.genericArguments[0];
 
         writer.WriteLine($"public static {elementType}[] {fieldInfo.Name};");
     }
 
-    public void HandleAssignmentGeneration(HandleInput handleInput)
+    public void HandleAssignmentGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
 
         writer.WriteLine($"{fieldInfo.Name} = so.{fieldInfo.Name}.ToArray();");
     }

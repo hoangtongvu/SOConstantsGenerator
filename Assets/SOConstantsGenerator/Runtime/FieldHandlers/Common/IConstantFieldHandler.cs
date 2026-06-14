@@ -2,7 +2,7 @@ namespace SOConstantsGenerator.FieldHandlers.Common;
 
 public interface IConstantFieldHandler
 {
-    bool CanHandle(CanHandleInput canHandleInput);
+    bool CanHandle(CanHandleContext canHandleContext);
 
-    void HandleInLineGeneration(HandleInput handleInput);
+    void HandleInLineGeneration(HandleContext handleContext);
 }

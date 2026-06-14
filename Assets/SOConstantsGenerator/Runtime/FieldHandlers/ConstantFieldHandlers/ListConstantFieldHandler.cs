@@ -9,9 +9,9 @@ public class ListConstantFieldHandler : IConstantFieldHandler
     private IEnumerable enumerable;
     private System.Type[] genericArguments;
 
-    public bool CanHandle(CanHandleInput canHandleInput)
+    public bool CanHandle(CanHandleContext canHandleContext)
     {
-        var fieldInfo = canHandleInput.FieldInfo;
+        var fieldInfo = canHandleContext.FieldInfo;
         var args = fieldInfo.Type.GetGenericArguments();
 
         if (fieldInfo.Value is IEnumerable enumerable &&
@@ -25,10 +25,10 @@ public class ListConstantFieldHandler : IConstantFieldHandler
         return false;
     }
 
-    public void HandleInLineGeneration(HandleInput handleInput)
+    public void HandleInLineGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
         var elementType = this.genericArguments[0];
 
         writer.WriteLine($"public static readonly {elementType}[] {fieldInfo.Name} = new {elementType}[]");

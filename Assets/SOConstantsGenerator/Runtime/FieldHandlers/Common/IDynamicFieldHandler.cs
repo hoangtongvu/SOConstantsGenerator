@@ -2,9 +2,9 @@ namespace SOConstantsGenerator.FieldHandlers.Common;
 
 public interface IDynamicFieldHandler
 {
-    bool CanHandle(CanHandleInput canHandleInput);
+    bool CanHandle(CanHandleContext canHandleContext);
 
-    void HandleDeclarationGeneration(HandleInput handleInput);
+    void HandleDeclarationGeneration(HandleContext handleContext);
 
-    void HandleAssignmentGeneration(HandleInput handleInput);
+    void HandleAssignmentGeneration(HandleContext handleContext);
 }

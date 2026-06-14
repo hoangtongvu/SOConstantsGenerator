@@ -155,18 +155,18 @@ public static class ConstantsGeneratorHelper
                 Value = value,
             };
 
-            var canHandleInput = new FieldHandlers.Common.CanHandleInput
+            var canHandleContext = new FieldHandlers.Common.CanHandleContext
             {
                 FieldInfo = fieldInfo,
             };
 
-            var handleInput = new FieldHandlers.Common.HandleInput
+            var handleContext = new FieldHandlers.Common.HandleContext
             {
                 Writer = writer,
                 FieldInfo = fieldInfo,
             };
 
-            fieldProcessor.ProcessDeclaration(canHandleInput, handleInput);
+            fieldProcessor.ProcessDeclaration(canHandleContext, handleContext);
         }
 
         writer.Unindent();
@@ -200,18 +200,18 @@ public static class ConstantsGeneratorHelper
                 Value = value,
             };
 
-            var canHandleInput = new FieldHandlers.Common.CanHandleInput
+            var canHandleContext = new FieldHandlers.Common.CanHandleContext
             {
                 FieldInfo = fieldInfo,
             };
 
-            var handleInput = new FieldHandlers.Common.HandleInput
+            var handleContext = new FieldHandlers.Common.HandleContext
             {
                 Writer = writer,
                 FieldInfo = fieldInfo,
             };
 
-            fieldProcessor.ProcessAssignment(canHandleInput, handleInput);
+            fieldProcessor.ProcessAssignment(canHandleContext, handleContext);
         }
 
         writer.Unindent();
@@ -257,19 +257,19 @@ public static class ConstantsGeneratorHelper
                 Value = value,
             };
 
-            var canHandleInput = new FieldHandlers.Common.CanHandleInput
+            var canHandleContext = new FieldHandlers.Common.CanHandleContext
             {
                 FieldInfo = fieldInfo,
             };
 
-            var handleInput = new FieldHandlers.Common.HandleInput
+            var handleContext = new FieldHandlers.Common.HandleContext
             {
                 Writer = writer,
                 FieldInfo = fieldInfo,
                 ConverterTypes = converterTypes,
             };
 
-            fieldProcessor.Process(canHandleInput, handleInput);
+            fieldProcessor.Process(canHandleContext, handleContext);
         }
 
         writer.Unindent();

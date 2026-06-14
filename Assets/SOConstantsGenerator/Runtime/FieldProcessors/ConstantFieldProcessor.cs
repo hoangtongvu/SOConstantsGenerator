@@ -16,13 +16,13 @@ public class ConstantFieldProcessor
         fieldHandlers.Add(new NormalConstantFieldHandler());
     }
 
-    public void Process(CanHandleInput canHandleInput, HandleInput handleInput)
+    public void Process(CanHandleContext canHandleContext, HandleContext handleContext)
     {
         foreach (var handler in fieldHandlers)
         {
-            if (!handler.CanHandle(canHandleInput)) continue;
+            if (!handler.CanHandle(canHandleContext)) continue;
 
-            handler.HandleInLineGeneration(handleInput);
+            handler.HandleInLineGeneration(handleContext);
             break;
         }
     }

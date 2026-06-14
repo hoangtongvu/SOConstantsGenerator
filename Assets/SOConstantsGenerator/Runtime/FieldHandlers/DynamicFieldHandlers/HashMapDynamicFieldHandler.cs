@@ -10,9 +10,9 @@ public class HashMapDynamicFieldHandler : IDynamicFieldHandler
     private IDictionary dictionary;
     private System.Type[] genericArguments;
 
-    public bool CanHandle(CanHandleInput canHandleInput)
+    public bool CanHandle(CanHandleContext canHandleContext)
     {
-        var fieldInfo = canHandleInput.FieldInfo;
+        var fieldInfo = canHandleContext.FieldInfo;
 
         if (fieldInfo.Value is IDictionary dictionary)
         {
@@ -24,10 +24,10 @@ public class HashMapDynamicFieldHandler : IDynamicFieldHandler
         return false;
     }
 
-    public void HandleDeclarationGeneration(HandleInput handleInput)
+    public void HandleDeclarationGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
         var keyType = this.genericArguments[0];
         var valueType = this.genericArguments[1];
 
@@ -49,10 +49,10 @@ public class HashMapDynamicFieldHandler : IDynamicFieldHandler
         writer.WriteLine("}");
     }
 
-    public void HandleAssignmentGeneration(HandleInput handleInput)
+    public void HandleAssignmentGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
         var keyType = this.genericArguments[0];
         var valueType = this.genericArguments[1];
 

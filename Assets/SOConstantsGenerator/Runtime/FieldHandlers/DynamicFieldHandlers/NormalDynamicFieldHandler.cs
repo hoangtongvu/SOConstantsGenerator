@@ -4,23 +4,23 @@ namespace SOConstantsGenerator.FieldHandlers.DynamicFieldHandlers;
 
 public class NormalDynamicFieldHandler : IDynamicFieldHandler
 {
-    public bool CanHandle(CanHandleInput canHandleInput)
+    public bool CanHandle(CanHandleContext canHandleContext)
     {
         return true;
     }
 
-    public void HandleDeclarationGeneration(HandleInput handleInput)
+    public void HandleDeclarationGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
 
         writer.WriteLine($"public static {fieldInfo.Type} {fieldInfo.Name};");
     }
 
-    public void HandleAssignmentGeneration(HandleInput handleInput)
+    public void HandleAssignmentGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
 
         writer.WriteLine($"{fieldInfo.Name} = so.{fieldInfo.Name};");
     }

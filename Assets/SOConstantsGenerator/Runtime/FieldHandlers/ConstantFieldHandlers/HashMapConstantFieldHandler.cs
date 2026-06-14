@@ -11,9 +11,9 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
     private IDictionary dictionary;
     private System.Type[] genericArguments;
 
-    public bool CanHandle(CanHandleInput canHandleInput)
+    public bool CanHandle(CanHandleContext canHandleContext)
     {
-        var fieldInfo = canHandleInput.FieldInfo;
+        var fieldInfo = canHandleContext.FieldInfo;
 
         if (fieldInfo.Value is IDictionary dictionary)
         {
@@ -25,10 +25,10 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         return false;
     }
 
-    public void HandleInLineGeneration(HandleInput handleInput)
+    public void HandleInLineGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
         var keyType = this.genericArguments[0];
         var valueType = this.genericArguments[1];
 

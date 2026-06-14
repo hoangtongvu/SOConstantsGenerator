@@ -1,5 +1,5 @@
 namespace SOConstantsGenerator.FieldHandlers.Common;
 
-public readonly record struct CanHandleInput(
+public readonly record struct CanHandleContext(
     MyFieldInfo FieldInfo
 );

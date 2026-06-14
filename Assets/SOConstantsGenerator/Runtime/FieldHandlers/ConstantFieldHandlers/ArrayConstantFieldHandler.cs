@@ -8,9 +8,9 @@ public class ArrayConstantFieldHandler : IConstantFieldHandler
 {
     private IEnumerable enumerable;
 
-    public bool CanHandle(CanHandleInput canHandleInput)
+    public bool CanHandle(CanHandleContext canHandleContext)
     {
-        var fieldInfo = canHandleInput.FieldInfo;
+        var fieldInfo = canHandleContext.FieldInfo;
 
         if (fieldInfo.Value is IEnumerable enumerable && fieldInfo.Type.IsArray)
         {
@@ -21,10 +21,10 @@ public class ArrayConstantFieldHandler : IConstantFieldHandler
         return false;
     }
 
-    public void HandleInLineGeneration(HandleInput handleInput)
+    public void HandleInLineGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
         var elementType = fieldInfo.Type.GetElementType();
 
         writer.WriteLine($"public static readonly {elementType}[] {fieldInfo.Name} = new {elementType}[]");

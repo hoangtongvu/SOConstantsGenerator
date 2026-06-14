@@ -7,9 +7,9 @@ public class ArrayDynamicFieldHandler : IDynamicFieldHandler
 {
     private IEnumerable enumerable;
 
-    public bool CanHandle(CanHandleInput canHandleInput)
+    public bool CanHandle(CanHandleContext canHandleContext)
     {
-        var fieldInfo = canHandleInput.FieldInfo;
+        var fieldInfo = canHandleContext.FieldInfo;
 
         if (fieldInfo.Value is IEnumerable enumerable && fieldInfo.Type.IsArray)
         {
@@ -20,19 +20,19 @@ public class ArrayDynamicFieldHandler : IDynamicFieldHandler
         return false;
     }
 
-    public void HandleDeclarationGeneration(HandleInput handleInput)
+    public void HandleDeclarationGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
         var elementType = fieldInfo.Type.GetElementType();
 
         writer.WriteLine($"public static {elementType}[] {fieldInfo.Name};");
     }
 
-    public void HandleAssignmentGeneration(HandleInput handleInput)
+    public void HandleAssignmentGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
 
         writer.WriteLine($"{fieldInfo.Name} = so.{fieldInfo.Name};");
     }

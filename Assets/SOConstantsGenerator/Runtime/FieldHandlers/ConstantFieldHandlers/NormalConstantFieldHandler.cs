@@ -9,16 +9,16 @@ namespace SOConstantsGenerator.FieldHandlers.ConstantFieldHandlers;
 
 public class NormalConstantFieldHandler : IConstantFieldHandler
 {
-    public bool CanHandle(CanHandleInput canHandleInput)
+    public bool CanHandle(CanHandleContext canHandleContext)
     {
         return true;
     }
 
-    public void HandleInLineGeneration(HandleInput handleInput)
+    public void HandleInLineGeneration(HandleContext handleContext)
     {
-        var writer = handleInput.Writer;
-        var fieldInfo = handleInput.FieldInfo;
-        var converterTypes = handleInput.ConverterTypes;
+        var writer = handleContext.Writer;
+        var fieldInfo = handleContext.FieldInfo;
+        var converterTypes = handleContext.ConverterTypes;
         var converterType = converterTypes?[0];
 
         if (CanBeUnmanagedConst(fieldInfo.Type))
