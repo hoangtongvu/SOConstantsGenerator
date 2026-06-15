@@ -42,21 +42,18 @@ public class HashMapDynamicFieldHandler : IDynamicFieldHandler
         var destValueFullName = GetCSharpFullName(destValueType);
 
         writer.WriteLine($"public struct {fieldInfo.Name}");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine($"public static Dictionary<{destKeyFullName}, {destValueFullName}> _InternalDictionary;");
-        writer.WriteLine($"public static int Count;");
-        writer.WriteLine($"public static {destKeyFullName}[] Keys;");
-        writer.WriteLine($"public static {destValueFullName}[] Values;");
-        GenerateEnumerableProperty(writer, destKeyFullName, destValueFullName);
-        GenerateTryGetValue(writer, destKeyFullName, destValueFullName);
-        GenerateGetValue(writer, destKeyFullName, destValueFullName);
-        GenerateContainsKey(writer, destKeyFullName);
-        GenerateContainsValue(writer, destValueFullName);
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine($"public static Dictionary<{destKeyFullName}, {destValueFullName}> _InternalDictionary;");
+            writer.WriteLine($"public static int Count;");
+            writer.WriteLine($"public static {destKeyFullName}[] Keys;");
+            writer.WriteLine($"public static {destValueFullName}[] Values;");
+            GenerateEnumerableProperty(writer, destKeyFullName, destValueFullName);
+            GenerateTryGetValue(writer, destKeyFullName, destValueFullName);
+            GenerateGetValue(writer, destKeyFullName, destValueFullName);
+            GenerateContainsKey(writer, destKeyFullName);
+            GenerateContainsValue(writer, destValueFullName);
+        }
     }
 
     public void HandleAssignmentGeneration(HandleContext handleContext)
@@ -90,62 +87,47 @@ public class HashMapDynamicFieldHandler : IDynamicFieldHandler
         writer.WriteLine("public static readonly t_Enumerable Enumerable;");
 
         writer.WriteLine($"public struct t_Enumerable : IEnumerable<KeyValuePair<{destKeyFullName}, {destValueFullName}>>");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine($"public IEnumerator<KeyValuePair<{destKeyFullName}, {destValueFullName}>> GetEnumerator() => _InternalDictionary.GetEnumerator();");
-        writer.WriteLine("IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine($"public IEnumerator<KeyValuePair<{destKeyFullName}, {destValueFullName}>> GetEnumerator() => _InternalDictionary.GetEnumerator();");
+            writer.WriteLine("IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();");
+        }
     }
 
     private static void GenerateTryGetValue(CodeWriter writer, string destKeyFullName, string destValueFullName)
     {
         writer.WriteLine($"public static bool TryGetValue({destKeyFullName} key, out {destValueFullName} value)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine($"return _InternalDictionary.TryGetValue(key, out value);");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine($"return _InternalDictionary.TryGetValue(key, out value);");
+        }
     }
 
     private static void GenerateGetValue(CodeWriter writer, string destKeyFullName, string destValueFullName)
     {
         writer.WriteLine($"public static {destValueFullName} GetValue({destKeyFullName} key)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine("if (TryGetValue(key, out var value)) return value;");
-        writer.WriteLine("throw new System.Collections.Generic.KeyNotFoundException($\"Key {key} Not Found.\");");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine("if (TryGetValue(key, out var value)) return value;");
+            writer.WriteLine("throw new System.Collections.Generic.KeyNotFoundException($\"Key {key} Not Found.\");");
+        }
     }
 
     private static void GenerateContainsKey(CodeWriter writer, string destKeyFullName)
     {
         writer.WriteLine($"public static bool ContainsKey({destKeyFullName} key)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine($"return _InternalDictionary.ContainsKey(key);");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine($"return _InternalDictionary.ContainsKey(key);");
+        }
     }
 
     private static void GenerateContainsValue(CodeWriter writer, string destValueFullName)
     {
         writer.WriteLine($"public static bool ContainsValue({destValueFullName} value)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine($"return _InternalDictionary.ContainsValue(value);");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine($"return _InternalDictionary.ContainsValue(value);");
+        }
     }
 }

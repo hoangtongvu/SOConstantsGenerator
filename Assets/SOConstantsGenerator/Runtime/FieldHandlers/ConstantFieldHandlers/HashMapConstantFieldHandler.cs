@@ -68,35 +68,27 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
     private void GenerateKeyArray(CodeWriter writer, Type keyType, Type keyConverterType, string destKeyFullName)
     {
         writer.WriteLine($"public static readonly {destKeyFullName}[] Keys = new {destKeyFullName}[]");
-
-        writer.WriteLine("{");
-        writer.Indent();
-
-        foreach (var entry in this.dictionary.Keys)
+        using (writer.Block(closing: "};"))
         {
-            writer.Write();
-            WriteConstValueLiteral(writer, entry, keyType, keyConverterType, punctuation: ",");
+            foreach (var entry in this.dictionary.Keys)
+            {
+                writer.Write();
+                WriteConstValueLiteral(writer, entry, keyType, keyConverterType, punctuation: ",");
+            }
         }
-
-        writer.Unindent();
-        writer.WriteLine("};");
     }
 
     private void GenerateValueArray(CodeWriter writer, Type valueType, Type valueConverterType, string destValueFullName)
     {
         writer.WriteLine($"public static readonly {destValueFullName}[] Values = new {destValueFullName}[]");
-
-        writer.WriteLine("{");
-        writer.Indent();
-
-        foreach (var entry in this.dictionary.Values)
+        using (writer.Block(closing: "};"))
         {
-            writer.Write();
-            WriteConstValueLiteral(writer, entry, valueType, valueConverterType, punctuation: ",");
+            foreach (var entry in this.dictionary.Values)
+            {
+                writer.Write();
+                WriteConstValueLiteral(writer, entry, valueType, valueConverterType, punctuation: ",");
+            }
         }
-
-        writer.Unindent();
-        writer.WriteLine("};");
     }
 
     private static void GenerateEnumerableProperty(CodeWriter writer, string destKeyFullName, string destValueFullName)
@@ -105,122 +97,94 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
         writer.WriteLine("public static readonly t_Enumerable Enumerable;");
 
         writer.WriteLine($"public struct t_Enumerable : IEnumerable<KeyValuePair<{destKeyFullName}, {destValueFullName}>>");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine("public Enumerator GetEnumerator() => new();");
-        writer.WriteLine($"IEnumerator<KeyValuePair<{destKeyFullName}, {destValueFullName}>> IEnumerable<KeyValuePair<{destKeyFullName}, {destValueFullName}>>.GetEnumerator() {{ throw new NotImplementedException(); }}");
-        writer.WriteLine($"IEnumerator IEnumerable.GetEnumerator() {{ throw new NotImplementedException(); }}");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine("public Enumerator GetEnumerator() => new();");
+            writer.WriteLine($"IEnumerator<KeyValuePair<{destKeyFullName}, {destValueFullName}>> IEnumerable<KeyValuePair<{destKeyFullName}, {destValueFullName}>>.GetEnumerator() {{ throw new NotImplementedException(); }}");
+            writer.WriteLine($"IEnumerator IEnumerable.GetEnumerator() {{ throw new NotImplementedException(); }}");
+        }
 
         // Generate Enumerator
         writer.WriteLine($"public struct Enumerator : IEnumerator<KeyValuePair<{destKeyFullName}, {destValueFullName}>>");
-        writer.WriteLine("{");
-        writer.Indent();
+        using (writer.Block())
+        {
+            writer.WriteLine("private int index = -1;");
+            writer.WriteLine($"public KeyValuePair<{destKeyFullName}, {destValueFullName}> Current => new(Keys[this.index], Values[this.index]);");
+            writer.WriteLine("object IEnumerator.Current => Current;");
+            writer.WriteLine("public Enumerator() { }");
+            writer.WriteLine("public void Dispose() { }");
 
-        writer.WriteLine("private int index = -1;");
-        writer.WriteLine($"public KeyValuePair<{destKeyFullName}, {destValueFullName}> Current => new(Keys[this.index], Values[this.index]);");
-        writer.WriteLine("object IEnumerator.Current => Current;");
-        writer.WriteLine("public Enumerator() { }");
-        writer.WriteLine("public void Dispose() { }");
-
-        writer.WriteLine("[MethodImpl(MethodImplOptions.AggressiveInlining)]");
-        writer.WriteLine("public bool MoveNext() { index++; return index < Count; }");
-        writer.WriteLine("public void Reset() => this.index = -1;");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+            writer.WriteLine("[MethodImpl(MethodImplOptions.AggressiveInlining)]");
+            writer.WriteLine("public bool MoveNext() { index++; return index < Count; }");
+            writer.WriteLine("public void Reset() => this.index = -1;");
+        }
     }
 
     private void GenerateTryGetValue(CodeWriter writer, string destKeyFullName, string destValueFullName)
     {
         writer.WriteLine($"public static bool TryGetValue({destKeyFullName} key, out {destValueFullName} value)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine("int keyHash = key.GetHashCode();");
-        writer.WriteLine("switch (keyHash)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        int keyIndex = 0;
-        foreach (var entry in this.dictionary.Keys)
+        using (writer.Block())
         {
-            writer.WriteLine($"case {entry.GetHashCode()}:");
-            writer.Indent();
-            writer.WriteLine($"value = Values[{keyIndex}];");
-            writer.WriteLine("return true;");
-            writer.Unindent();
-            keyIndex++;
+            writer.WriteLine("int keyHash = key.GetHashCode();");
+            writer.WriteLine("switch (keyHash)");
+            using (writer.Block())
+            {
+                int keyIndex = 0;
+                foreach (var entry in this.dictionary.Keys)
+                {
+                    writer.WriteLine($"case {entry.GetHashCode()}:");
+                    writer.Indent();
+                    writer.WriteLine($"value = Values[{keyIndex}];");
+                    writer.WriteLine("return true;");
+                    writer.Unindent();
+                    keyIndex++;
+                }
+            }
+
+            writer.WriteLine("value = default;");
+            writer.WriteLine("return false;");
         }
-
-        writer.Unindent();
-        writer.WriteLine("}");
-
-        writer.WriteLine("value = default;");
-        writer.WriteLine("return false;");
-
-        writer.Unindent();
-        writer.WriteLine("}");
     }
 
     private static void GenerateGetValue(CodeWriter writer, string destKeyFullName, string destValueFullName)
     {
         writer.WriteLine($"public static {destValueFullName} GetValue({destKeyFullName} key)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine("if (TryGetValue(key, out var value)) return value;");
-        writer.WriteLine("throw new System.Collections.Generic.KeyNotFoundException($\"Key {key} Not Found.\");");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine("if (TryGetValue(key, out var value)) return value;");
+            writer.WriteLine("throw new System.Collections.Generic.KeyNotFoundException($\"Key {key} Not Found.\");");
+        }
     }
 
     private void GenerateContainsKey(CodeWriter writer, string destKeyFullName)
     {
         writer.WriteLine($"public static bool ContainsKey({destKeyFullName} key)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine("int keyHash = key.GetHashCode();");
-        writer.WriteLine("return keyHash switch");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        foreach (var entry in this.dictionary.Keys)
+        using (writer.Block())
         {
-            writer.WriteLine($"{entry.GetHashCode()} => true,");
+            writer.WriteLine("int keyHash = key.GetHashCode();");
+            writer.WriteLine("return keyHash switch");
+            using (writer.Block(closing: "};"))
+            {
+                foreach (var entry in this.dictionary.Keys)
+                {
+                    writer.WriteLine($"{entry.GetHashCode()} => true,");
+                }
+                writer.WriteLine("_ => false,");
+            }
         }
-        writer.WriteLine("_ => false,");
-
-        writer.Unindent();
-        writer.WriteLine("};");
-
-        writer.Unindent();
-        writer.WriteLine("}");
     }
 
     private static void GenerateContainsValue(CodeWriter writer, string destValueFullName)
     {
         writer.WriteLine($"public static bool ContainsValue({destValueFullName} value)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine($"foreach (var entry in Values)");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        writer.WriteLine($"if (value.Equals(entry)) return true;");
-
-        writer.Unindent();
-        writer.WriteLine("}");
-
-        writer.WriteLine("return false;");
-
-        writer.Unindent();
-        writer.WriteLine("}");
+        using (writer.Block())
+        {
+            writer.WriteLine($"foreach (var entry in Values)");
+            using (writer.Block())
+            {
+                writer.WriteLine($"if (value.Equals(entry)) return true;");
+            }
+            writer.WriteLine("return false;");
+        }
     }
 }

@@ -38,4 +38,18 @@ public class CodeWriter : IDisposable
     public void Close() => _writer.Close();
 
     public void Dispose() => _writer.Dispose();
+
+    public IDisposable Block(string opening = "{", string closing = "}")
+    {
+        WriteLine(opening);
+        Indent();
+        return new BlockScope(() => { Unindent(); WriteLine(closing); });
+    }
+
+    private class BlockScope : IDisposable
+    {
+        private readonly Action _onDispose;
+        public BlockScope(Action onDispose) => _onDispose = onDispose;
+        public void Dispose() => _onDispose();
+    }
 }

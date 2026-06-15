@@ -79,17 +79,14 @@ public static class CodeWriterHelper
                     .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
 
                 writer.WriteLineNoIndent($"new {GetCSharpFullName(type)}()");
-                writer.WriteLine("{");
-                writer.Indent();
-
-                foreach (var field in fields)
+                using (writer.Block(closing: $"}}{punctuation}"))
                 {
-                    writer.Write($"{field.Name} = ");
-                    WriteConstValueLiteral(writer, field.GetValue(o), field.FieldType, punctuation: ",");
+                    foreach (var field in fields)
+                    {
+                        writer.Write($"{field.Name} = ");
+                        WriteConstValueLiteral(writer, field.GetValue(o), field.FieldType, punctuation: ",");
+                    }
                 }
-
-                writer.Unindent();
-                writer.WriteLine($"}}{punctuation}");
 
                 return;
             }
@@ -100,20 +97,17 @@ public static class CodeWriterHelper
                     .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
 
                 writer.WriteLineNoIndent($"new {GetCSharpFullName(converterType)}().Convert(new()");
-                writer.WriteLine("{");
-                writer.Indent();
-
-                foreach (var field in fields)
+                using (writer.Block(closing: $"}}){punctuation}"))
                 {
-                    var childConverterTypes = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterTypes;
-                    var childConverterType = childConverterTypes?[0];
+                    foreach (var field in fields)
+                    {
+                        var childConverterTypes = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterTypes;
+                        var childConverterType = childConverterTypes?[0];
 
-                    writer.Write($"{field.Name} = ");
-                    WriteConstValueLiteral(writer, field.GetValue(o), field.FieldType, childConverterType, punctuation: ",");
+                        writer.Write($"{field.Name} = ");
+                        WriteConstValueLiteral(writer, field.GetValue(o), field.FieldType, childConverterType, punctuation: ",");
+                    }
                 }
-
-                writer.Unindent();
-                writer.WriteLine($"}}){punctuation}");
 
                 return;
             }

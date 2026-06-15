@@ -33,16 +33,13 @@ public class ArrayConstantFieldHandler : IConstantFieldHandler
             destElementType = elementType;
 
         writer.WriteLine($"public static readonly {GetCSharpFullName(destElementType)}[] {fieldInfo.Name} = new {GetCSharpFullName(destElementType)}[]");
-        writer.WriteLine("{");
-        writer.Indent();
-
-        foreach (var element in enumerable)
+        using (writer.Block(closing: "};"))
         {
-            writer.Write();
-            WriteConstValueLiteral(writer, element, elementType, elementConverterType, punctuation: ",");
+            foreach (var element in enumerable)
+            {
+                writer.Write();
+                WriteConstValueLiteral(writer, element, elementType, elementConverterType, punctuation: ",");
+            }
         }
-
-        writer.Unindent();
-        writer.WriteLine("};");
     }
 }
