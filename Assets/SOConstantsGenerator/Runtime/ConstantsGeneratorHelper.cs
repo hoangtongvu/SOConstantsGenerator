@@ -147,6 +147,9 @@ public static class ConstantsGeneratorHelper
         {
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
+            var converterTypes = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterTypes;
+
+            VerifyConverterTypes(ref converterTypes);
 
             var fieldInfo = new MyFieldInfo
             {
@@ -164,6 +167,7 @@ public static class ConstantsGeneratorHelper
             {
                 Writer = writer,
                 FieldInfo = fieldInfo,
+                ConverterTypes = converterTypes,
             };
 
             fieldProcessor.ProcessDeclaration(canHandleContext, handleContext);
@@ -185,13 +189,16 @@ public static class ConstantsGeneratorHelper
         writer.WriteLine("{");
 
         writer.Indent();
-        writer.WriteLine($"var so = ({soType})EditorUtility.InstanceIDToObject({so.GetInstanceID()});");
+        writer.WriteLine($"var so = ({soType})EditorUtility.EntityIdToObject({so.GetEntityId()});");
 
         // Generate Assignments
         foreach (var field in fields)
         {
             var fieldType = field.FieldType;
             var value = field.GetValue(so);
+            var converterTypes = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterTypes;
+
+            VerifyConverterTypes(ref converterTypes);
 
             var fieldInfo = new MyFieldInfo
             {
@@ -209,6 +216,7 @@ public static class ConstantsGeneratorHelper
             {
                 Writer = writer,
                 FieldInfo = fieldInfo,
+                ConverterTypes = converterTypes,
             };
 
             fieldProcessor.ProcessAssignment(canHandleContext, handleContext);
