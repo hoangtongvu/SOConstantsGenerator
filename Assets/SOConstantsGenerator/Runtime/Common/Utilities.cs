@@ -84,12 +84,13 @@ public static class Utilities
         return $"{GetCSharpFullName(type.DeclaringType!)}.{type.Name}";
     }
 
-    public static void GetSourceAndDestTypes(System.Type converterType, out System.Type sourceType, out System.Type destType)
+    public static bool TryGetSourceAndDestTypes(System.Type converterType, out System.Type sourceType, out System.Type destType)
     {
         sourceType = null;
         destType = null;
 
-        if (converterType == null) return;
+        if (converterType == null)
+            return false;
 
         var converterInterface = converterType
             .GetInterfaces()
@@ -97,101 +98,14 @@ public static class Utilities
                 i.IsGenericType &&
                 i.GetGenericTypeDefinition() == typeof(ITypeConverter<,>));
 
-        if (converterInterface != null)
-        {
-            var args = converterInterface.GetGenericArguments();
+        if (converterInterface == null)
+            return false;
 
-            sourceType = args[0];
-            destType = args[1];
-        }
-    }
+        var args = converterInterface.GetGenericArguments();
 
-    public static string ToCodeLiteral(object o, Type type = null, Type converterType = null)
-    {
-        if (type == null)
-            type = o.GetType();
+        sourceType = args[0];
+        destType = args[1];
 
-        if (o == null)
-            return "null";
-
-        // Handle primitives
-        if (type == typeof(int))
-            return ((int)o).ToString();
-
-        if (type == typeof(float))
-            return ((float)o).ToString("R") + "f";
-
-        if (type == typeof(double))
-            return ((double)o).ToString("R");
-
-        if (type == typeof(bool))
-            return ((bool)o) ? "true" : "false";
-
-        if (type == typeof(string))
-            return $"@\"{((string)o).Replace("\"", "\"\"")}\"";
-
-        if (type.IsEnum)
-            return $"{type.FullName}.{o}";
-
-        // Handle unmanaged structs
-        if (type.IsValueType)
-        {
-            var bytesString = BoxedStructToBytesString(type, o);
-            return $"Unsafe.As<byte, {GetCSharpFullName(type)}>(ref new byte[] {{ {bytesString} }}[0])";
-        }
-
-        // Handle classes w/wo converters
-        if (type.IsClass)
-        {
-            var sb = new CodeStringBuilder();
-
-            // Handle base class's nested class, only need to reconstruct it field by field, ignore converter of any fields
-            if (converterType == null)
-            {
-                var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
-
-                sb.AppendLine($"new {GetCSharpFullName(type)}()");
-                sb.AppendLine("{");
-                sb.Indent();
-
-                foreach (var field in fields)
-                {
-                    string valueLiteral = ToCodeLiteral(field.GetValue(o), field.FieldType);
-                    sb.AppendLine($"{field.Name} = {valueLiteral},");
-                }
-
-                sb.Unindent();
-                sb.AppendLine("}");
-
-                return sb.ToString();
-            }
-            // Handle base class, require converter
-            else
-            {
-                var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
-
-                sb.AppendLine($"new {GetCSharpFullName(converterType)}().Convert(new()");
-                sb.AppendLine("{");
-                sb.Indent();
-
-                foreach (var field in fields)
-                {
-                    var childConverterTypes = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterTypes;
-                    var childConverterType = childConverterTypes?[0];
-                    var valueLiteral = ToCodeLiteral(field.GetValue(o), field.FieldType, childConverterType);
-
-                    sb.AppendLine($"{field.Name} = {valueLiteral},");
-                }
-
-                sb.Unindent();
-                sb.AppendLine("})");
-
-                return sb.ToString();
-            }
-        }
-
-        throw new NotSupportedException(type.FullName);
+        return true;
     }
 }

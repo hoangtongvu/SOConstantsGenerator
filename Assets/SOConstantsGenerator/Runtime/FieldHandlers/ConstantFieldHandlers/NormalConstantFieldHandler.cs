@@ -1,8 +1,5 @@
-using SOConstantsGenerator.Common;
 using SOConstantsGenerator.FieldHandlers.Common;
-using System;
-using System.Linq;
-using System.Reflection;
+using static SOConstantsGenerator.Common.CodeWriterHelper;
 using static SOConstantsGenerator.Common.Utilities;
 
 namespace SOConstantsGenerator.FieldHandlers.ConstantFieldHandlers;
@@ -29,18 +26,13 @@ public class NormalConstantFieldHandler : IConstantFieldHandler
         else
         {
             // Handle static readonly
-            if (converterType == null)
-            {
-                writer.WriteLine($"public static readonly {GetCSharpFullName((fieldInfo.Type))} {fieldInfo.Name} =");
-            }
-            else
-            {
-                GetSourceAndDestTypes(converterType, out _, out var destType);
-                writer.WriteLine($"public static readonly {GetCSharpFullName(destType)} {fieldInfo.Name} =");
-            }
+            if (!TryGetSourceAndDestTypes(converterType, out _, out var destType))
+                destType = fieldInfo.Type;
 
+            writer.WriteLine($"public static readonly {GetCSharpFullName(destType)} {fieldInfo.Name} =");
             writer.Indent();
-            writer.WriteLine($"{ToCodeLiteral(fieldInfo.Value, fieldInfo.Type, converterType)};");
+            writer.Write();
+            WriteConstValueLiteral(writer, fieldInfo.Value, fieldInfo.Type, converterType, punctuation: ";");
             writer.Unindent();
         }
     }

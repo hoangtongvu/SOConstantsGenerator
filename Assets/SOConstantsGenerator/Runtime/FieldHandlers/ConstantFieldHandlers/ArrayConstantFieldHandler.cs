@@ -1,5 +1,6 @@
 using SOConstantsGenerator.FieldHandlers.Common;
 using System.Collections;
+using static SOConstantsGenerator.Common.CodeWriterHelper;
 using static SOConstantsGenerator.Common.Utilities;
 
 namespace SOConstantsGenerator.FieldHandlers.ConstantFieldHandlers;
@@ -28,8 +29,8 @@ public class ArrayConstantFieldHandler : IConstantFieldHandler
         var elementType = fieldInfo.Type.GetElementType();
         var elementConverterType = handleContext.ConverterTypes?[0];
 
-        GetSourceAndDestTypes(elementConverterType, out _, out var destElementType);
-        destElementType ??= elementType;
+        if (!TryGetSourceAndDestTypes(elementConverterType, out _, out var destElementType))
+            destElementType = elementType;
 
         writer.WriteLine($"public static readonly {GetCSharpFullName(destElementType)}[] {fieldInfo.Name} = new {GetCSharpFullName(destElementType)}[]");
         writer.WriteLine("{");
@@ -37,7 +38,8 @@ public class ArrayConstantFieldHandler : IConstantFieldHandler
 
         foreach (var element in enumerable)
         {
-            writer.WriteLine($"{ToCodeLiteral(element, elementType, elementConverterType)},");
+            writer.Write();
+            WriteConstValueLiteral(writer, element, elementType, elementConverterType, punctuation: ",");
         }
 
         writer.Unindent();

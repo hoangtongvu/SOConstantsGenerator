@@ -2,6 +2,7 @@ using SOConstantsGenerator.Common;
 using SOConstantsGenerator.FieldHandlers.Common;
 using System;
 using System.Collections;
+using static SOConstantsGenerator.Common.CodeWriterHelper;
 using static SOConstantsGenerator.Common.Utilities;
 
 namespace SOConstantsGenerator.FieldHandlers.ConstantFieldHandlers;
@@ -32,14 +33,14 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
 
         var keyType = this.genericArguments[0];
         var keyConverterType = handleContext.ConverterTypes?[0];
-        GetSourceAndDestTypes(keyConverterType, out _, out var destKeyType);
-        destKeyType ??= keyType;
+        if (!TryGetSourceAndDestTypes(keyConverterType, out _, out var destKeyType))
+            destKeyType = keyType;
         var destKeyFullName = GetCSharpFullName(destKeyType);
 
         var valueType = this.genericArguments[1];
         var valueConverterType = handleContext.ConverterTypes?[1];
-        GetSourceAndDestTypes(valueConverterType, out _, out var destValueType);
-        destValueType ??= valueType;
+        if (!TryGetSourceAndDestTypes(valueConverterType, out _, out var destValueType))
+            destValueType = valueType;
         var destValueFullName = GetCSharpFullName(destValueType);
 
         writer.WriteLine($"public struct {fieldInfo.Name}");
@@ -73,7 +74,8 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
 
         foreach (var entry in this.dictionary.Keys)
         {
-            writer.WriteLine($"{ToCodeLiteral(entry, keyType, keyConverterType)},");
+            writer.Write();
+            WriteConstValueLiteral(writer, entry, keyType, keyConverterType, punctuation: ",");
         }
 
         writer.Unindent();
@@ -89,7 +91,8 @@ public class HashMapConstantFieldHandler : IConstantFieldHandler
 
         foreach (var entry in this.dictionary.Values)
         {
-            writer.WriteLine($"{ToCodeLiteral(entry, valueType, valueConverterType)},");
+            writer.Write();
+            WriteConstValueLiteral(writer, entry, valueType, valueConverterType, punctuation: ",");
         }
 
         writer.Unindent();

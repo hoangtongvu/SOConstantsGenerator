@@ -19,13 +19,19 @@ public class CodeWriter : IDisposable
 
     public void Indent() => _indentLevel++;
 
-    public void Unindent() => _indentLevel--;
+    public void Unindent() { if (_indentLevel > 0) _indentLevel--; }
 
-    public void Write(string line) => _writer.Write(line);
+    public void Write() => _writer.Write(new string(' ', _indentLevel * 4));
+
+    public void Write(string line) => _writer.Write(new string(' ', _indentLevel * 4) + line);
+
+    public void WriteNoIndent(string line) => _writer.Write(line);
 
     public void WriteLine() => _writer.WriteLine();
 
     public void WriteLine(string line) => _writer.WriteLine(new string(' ', _indentLevel * 4) + line);
+
+    public void WriteLineNoIndent(string line) => _writer.WriteLine(line);
 
     public void Flush() => _writer.Flush();
 
