@@ -1,4 +1,3 @@
-using Cores;
 using Unity.Burst;
 using Unity.Entities;
 using UnityEngine;
@@ -27,12 +26,13 @@ namespace Core
         private void Log()
         {
             Debug.Log("___________________________________________________________");
-            Debug.Log($"{GameBalance.TestType0.value}");
-            Debug.Log($"{GameBalance.TestType1.ToFixedString()}");
+
+            Debug.Log($"<b>Single UserData:</b>");
+            Debug.Log($"{GameBalance.UserData.ToFixedString()}");
 
             Debug.Log($"<b>Array:</b>");
             int count = 0;
-            foreach (var testType in GameBalance.TestTypeArray)
+            foreach (var testType in GameBalance.UserDataArray)
             {
                 Debug.Log($"[{count}] {testType.ToFixedString()}");
                 count++;
@@ -40,23 +40,19 @@ namespace Core
 
             Debug.Log($"<b>List:</b>");
             count = 0;
-            foreach (var testType in GameBalance.TestTypeList)
+            foreach (var testType in GameBalance.UserDataList)
             {
-                Debug.Log($"[{count}] {testType.ToFixedString()}");
+                Debug.Log($"[{count}] {testType}");
                 count++;
             }
 
             Debug.Log($"<b>HashMap:</b>");
             count = 0;
-            foreach (var kvPair in GameBalance.Profiles.Enumerable)
+            foreach (var kvPair in GameBalance.UserDataMap1.Enumerable)
             {
                 Debug.Log($"[{count}] K[{kvPair.Key.ToFixedString()}] - V[{kvPair.Value.ToFixedString()}]");
                 count++;
             }
-
-            var key = new TestProfileId { UnitType = 0, VariantIndex = 1 };
-            GameBalance.Profiles.TryGetValue(key, out var profile);
-            Debug.Log($"K[{key.ToFixedString()}] - V[{profile.ToFixedString()}]");
         }
     }
 }

@@ -12,47 +12,651 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc5415e1378e4147a3bcac857333203, type: 3}
   m_Name: TestSO
   m_EditorClassIdentifier: Cores::SOConstGenerator.TestSO
-  PlayerBaseSpeed: 4.5
-  MaxLives: 3
-  TestType0:
-    value: 500
-  TestType1:
-    Sf: 15
-    G: 0.7
-    AnotherHalf:
-      value: 100
-  TestTypeArray:
-  - Sf: 5
-    G: 4.1
-    AnotherHalf:
-      value: 71
-  - Sf: 12
-    G: 1.2
-    AnotherHalf:
-      value: 143
-  TestTypeList:
-  - Sf: 7
-    G: 78
-    AnotherHalf:
-      value: 123
-  Profiles:
+  StringValue: Bambo
+  UnmanangedPrimitiveValue: 4.5
+  UserData:
+    NameInfo:
+      FamilyName: Doe
+      LastName: John
+    Age: 35
+    IsStudent: 0
+    Balance: 1000
+  UserDataArray:
+  - NameInfo:
+      FamilyName: Hap
+      LastName: Po
+    Age: 80
+    IsStudent: 0
+    Balance: 100
+  - NameInfo:
+      FamilyName: Li
+      LastName: Li
+    Age: 15
+    IsStudent: 0
+    Balance: 0
+  UserDataList:
+  - NameInfo:
+      FamilyName: Hap
+      LastName: Po
+    Age: 80
+    IsStudent: 0
+    Balance: 100
+  - NameInfo:
+      FamilyName: Li
+      LastName: Li
+    Age: 15
+    IsStudent: 0
+    Balance: 0
+  UserDataMap0:
     _serializedList:
     - Key:
-        UnitType: 0
-        VariantIndex: 0
+        Value: 0
       Value:
-        Data0: 1
-        Data1: 1.2
+        NameInfo:
+          FamilyName: Hap
+          LastName: Po
+        Age: 80
+        IsStudent: 0
+        Balance: 100
     - Key:
-        UnitType: 1
-        VariantIndex: 0
+        Value: 1
       Value:
-        Data0: 2
-        Data1: 2.3
+        NameInfo:
+          FamilyName: Li
+          LastName: Li
+        Age: 15
+        IsStudent: 0
+        Balance: 0
+  UserDataMap1:
+    _serializedList:
     - Key:
-        UnitType: 0
-        VariantIndex: 1
+        Value: 15
       Value:
-        Data0: 3
-        Data1: 3.4
+        NameInfo:
+          FamilyName: Hap
+          LastName: Po
+        Age: 80
+        IsStudent: 0
+        Balance: 100
+    - Key:
+        Value: 40
+      Value:
+        NameInfo:
+          FamilyName: Li
+          LastName: Li
+        Age: 15
+        IsStudent: 0
+        Balance: 0
+  UserDataMap2:
+    _serializedList:
+    - Key:
+        Value: 0
+      Value:
+        NameInfo:
+          FamilyName:
+            utf8LengthInBytes: 12
+            bytes:
+              offset0000:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0016:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0032:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              byte0048: 0
+              byte0049: 0
+              byte0050: 0
+              byte0051: 0
+              byte0052: 0
+              byte0053: 0
+              byte0054: 0
+              byte0055: 0
+              byte0056: 0
+              byte0057: 0
+              byte0058: 0
+              byte0059: 0
+              byte0060: 0
+              byte0061: 0
+          LastName:
+            utf8LengthInBytes: 123
+            bytes:
+              offset0000:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0016:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0032:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              byte0048: 0
+              byte0049: 0
+              byte0050: 0
+              byte0051: 0
+              byte0052: 0
+              byte0053: 0
+              byte0054: 0
+              byte0055: 0
+              byte0056: 0
+              byte0057: 0
+              byte0058: 0
+              byte0059: 0
+              byte0060: 0
+              byte0061: 0
+        Age: 80
+        Balance: 100
+    - Key:
+        Value: 1
+      Value:
+        NameInfo:
+          FamilyName:
+            utf8LengthInBytes: 123
+            bytes:
+              offset0000:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0016:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0032:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              byte0048: 0
+              byte0049: 0
+              byte0050: 0
+              byte0051: 0
+              byte0052: 0
+              byte0053: 0
+              byte0054: 0
+              byte0055: 0
+              byte0056: 0
+              byte0057: 0
+              byte0058: 0
+              byte0059: 0
+              byte0060: 0
+              byte0061: 0
+          LastName:
+            utf8LengthInBytes: 56
+            bytes:
+              offset0000:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0016:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0032:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              byte0048: 0
+              byte0049: 0
+              byte0050: 0
+              byte0051: 0
+              byte0052: 0
+              byte0053: 0
+              byte0054: 0
+              byte0055: 0
+              byte0056: 0
+              byte0057: 0
+              byte0058: 0
+              byte0059: 0
+              byte0060: 0
+              byte0061: 0
+        Age: 15
+        Balance: 0
+  UserDataMap3:
+    _serializedList:
+    - Key:
+        Value: 15
+      Value:
+        NameInfo:
+          FamilyName:
+            utf8LengthInBytes: 45
+            bytes:
+              offset0000:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0016:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0032:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              byte0048: 0
+              byte0049: 0
+              byte0050: 0
+              byte0051: 0
+              byte0052: 0
+              byte0053: 0
+              byte0054: 0
+              byte0055: 0
+              byte0056: 0
+              byte0057: 0
+              byte0058: 0
+              byte0059: 0
+              byte0060: 0
+              byte0061: 0
+          LastName:
+            utf8LengthInBytes: 456
+            bytes:
+              offset0000:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0016:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0032:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              byte0048: 0
+              byte0049: 0
+              byte0050: 0
+              byte0051: 0
+              byte0052: 0
+              byte0053: 0
+              byte0054: 0
+              byte0055: 0
+              byte0056: 0
+              byte0057: 0
+              byte0058: 0
+              byte0059: 0
+              byte0060: 0
+              byte0061: 0
+        Age: 80
+        Balance: 100
+    - Key:
+        Value: 40
+      Value:
+        NameInfo:
+          FamilyName:
+            utf8LengthInBytes: 47
+            bytes:
+              offset0000:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0016:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0032:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              byte0048: 0
+              byte0049: 0
+              byte0050: 0
+              byte0051: 0
+              byte0052: 0
+              byte0053: 0
+              byte0054: 0
+              byte0055: 0
+              byte0056: 0
+              byte0057: 0
+              byte0058: 0
+              byte0059: 0
+              byte0060: 0
+              byte0061: 0
+          LastName:
+            utf8LengthInBytes: 74
+            bytes:
+              offset0000:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0016:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              offset0032:
+                byte0000: 0
+                byte0001: 0
+                byte0002: 0
+                byte0003: 0
+                byte0004: 0
+                byte0005: 0
+                byte0006: 0
+                byte0007: 0
+                byte0008: 0
+                byte0009: 0
+                byte0010: 0
+                byte0011: 0
+                byte0012: 0
+                byte0013: 0
+                byte0014: 0
+                byte0015: 0
+              byte0048: 0
+              byte0049: 0
+              byte0050: 0
+              byte0051: 0
+              byte0052: 0
+              byte0053: 0
+              byte0054: 0
+              byte0055: 0
+              byte0056: 0
+              byte0057: 0
+              byte0058: 0
+              byte0059: 0
+              byte0060: 0
+              byte0061: 0
+        Age: 15
+        Balance: 0
   OutputFolder: {fileID: 102900000, guid: 98095e6036d389749819a8cadd0635a9, type: 3}
