@@ -17,5 +17,5 @@ To install, paste the following URL into Unity's **Package Manager**:
 4. Enter:
 
 ```bash
-https://github.com/hoangtongvu/SOConstantsGenerator.git?path=/Assets/SOConstantsGenerator
+https://github.com/hoangtongvu/SOConstantsGenerator.git?path=/Assets/SOConstantsGenerator#1.1.0
 ```
