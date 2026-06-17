@@ -1,7 +1,7 @@
 # SO Constants Generator
 
 ![Unity](https://img.shields.io/badge/Unity-2021?logo=unity)
-![License](https://img.shields.io/github/license/hoangtongvu/SOConstantsGenerator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
