@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
 using static SOConstantsGenerator.Common.Utilities;
 
@@ -7,6 +7,9 @@ namespace SOConstantsGenerator.Common;
 
 public static class CodeWriterHelper
 {
+    private static readonly Dictionary<Type, object> converterInstanceCache = new();
+    private static readonly Dictionary<Type, MethodInfo> convertMethodCache = new();
+
     public static void WriteConstValueLiteral(
         CodeWriter writer,
         object o,
@@ -69,48 +72,26 @@ public static class CodeWriterHelper
             return;
         }
 
-        // Handle classes w/wo converters
         if (type.IsClass)
         {
-            // Handle base class's nested class, only need to reconstruct it field by field, ignore converter of any fields
             if (converterType == null)
+                throw new Exception("Class type requires 1 converter");
+
+            if (!converterInstanceCache.TryGetValue(converterType, out var converter))
             {
-                var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
-
-                writer.WriteLineNoIndent($"new {GetCSharpFullName(type)}()");
-                using (writer.Block(closing: $"}}{punctuation}"))
-                {
-                    foreach (var field in fields)
-                    {
-                        writer.Write($"{field.Name} = ");
-                        WriteConstValueLiteral(writer, field.GetValue(o), field.FieldType, punctuation: ",");
-                    }
-                }
-
-                return;
+                converter = Activator.CreateInstance(converterType);
+                converterInstanceCache[converterType] = converter;
             }
-            // Handle base class, require converter
-            else
+
+            if (!convertMethodCache.TryGetValue(converterType, out var convertMethod))
             {
-                var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(f => f.GetCustomAttribute<ConstantFieldAttribute>() != null);
-
-                writer.WriteLineNoIndent($"new {GetCSharpFullName(converterType)}().Convert(new()");
-                using (writer.Block(closing: $"}}){punctuation}"))
-                {
-                    foreach (var field in fields)
-                    {
-                        var childConverterTypes = field.GetCustomAttribute<ConstantFieldAttribute>().ConverterTypes;
-                        var childConverterType = childConverterTypes?[0];
-
-                        writer.Write($"{field.Name} = ");
-                        WriteConstValueLiteral(writer, field.GetValue(o), field.FieldType, childConverterType, punctuation: ",");
-                    }
-                }
-
-                return;
+                convertMethod = converterType.GetMethod("Convert");
+                convertMethodCache[converterType] = convertMethod;
             }
+
+            object destValue = convertMethod.Invoke(converter, new[] { o });
+            WriteConstValueLiteral(writer, destValue, destValue.GetType(), punctuation: punctuation);
+            return;
         }
 
         throw new NotSupportedException(type.FullName);

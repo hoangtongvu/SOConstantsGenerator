@@ -1,4 +1,3 @@
-using Core;
 using SOConstantsGenerator;
 using System;
 using Unity.Collections;
@@ -11,18 +10,12 @@ namespace Cores;
 public static class UserData
 {
     // The Managed part for Editor only
-    // so it may contain redundant fields,
-    // add [ConstantField] attribute on those fields that are essential for Managed instance recreation for UnmanagedConverter
     [Serializable]
     public class Managed
     {
-        [ConstantField] public UserNameInfo NameInfo;
-        [ConstantField] public int Age;
-
-        // A field for Editor only, show Balance if false
-        public bool IsStudent;
-
-        [ConstantField] public int Balance;
+        public UserNameInfo NameInfo;
+        public int Age;
+        public int Balance;
     }
 
     // The Unmanaged part for runtime only
@@ -68,8 +61,8 @@ public static class UserData
 [Serializable]
 public class UserNameInfo
 {
-    [ConstantField] public string FamilyName;
-    [ConstantField] public string LastName;
+    public string FamilyName;
+    public string LastName;
 }
 
 [Serializable]
@@ -96,7 +89,7 @@ public static class UserKey
     [Serializable]
     public class Managed : IEquatable<Managed>
     {
-        [ConstantField] public int Value;
+        public int Value;
 
         public bool Equals(Managed other) => Value == other.Value;
 

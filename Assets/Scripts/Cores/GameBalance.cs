@@ -12,98 +12,29 @@ public static class GameBalance
         @"Bambo";
     public const System.Single UnmanangedPrimitiveValue = 4.5f;
     public static readonly Cores.UserData.Unmanaged UserData =
-        new Cores.UserData.UnmanagedConverter().Convert(new()
-        {
-            NameInfo = new Cores.UserNameInfo()
-            {
-                FamilyName = @"Doe",
-                LastName = @"John",
-            },
-            Age = 35,
-            Balance = 1000,
-        });
+        Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 3, 0, 68, 111, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 74, 111, 104, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 0, 0, 0, 232, 3, 0, 0 }[0]);
     public static readonly Cores.UserData.Unmanaged[] UserDataArray = new Cores.UserData.Unmanaged[]
     {
-        new Cores.UserData.UnmanagedConverter().Convert(new()
-        {
-            NameInfo = new Cores.UserNameInfo()
-            {
-                FamilyName = @"Hap",
-                LastName = @"Po",
-            },
-            Age = 80,
-            Balance = 100,
-        }),
-        new Cores.UserData.UnmanagedConverter().Convert(new()
-        {
-            NameInfo = new Cores.UserNameInfo()
-            {
-                FamilyName = @"Li",
-                LastName = @"Li",
-            },
-            Age = 15,
-            Balance = 0,
-        }),
+        Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 3, 0, 72, 97, 112, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 80, 111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80, 0, 0, 0, 100, 0, 0, 0 }[0]),
+        Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 2, 0, 76, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 76, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0 }[0]),
     };
     public static readonly Cores.UserData.Unmanaged[] UserDataList = new Cores.UserData.Unmanaged[]
     {
-        new Cores.UserData.UnmanagedConverter().Convert(new()
-        {
-            NameInfo = new Cores.UserNameInfo()
-            {
-                FamilyName = @"Hap",
-                LastName = @"Po",
-            },
-            Age = 80,
-            Balance = 100,
-        }),
-        new Cores.UserData.UnmanagedConverter().Convert(new()
-        {
-            NameInfo = new Cores.UserNameInfo()
-            {
-                FamilyName = @"Li",
-                LastName = @"Li",
-            },
-            Age = 15,
-            Balance = 0,
-        }),
+        Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 3, 0, 72, 97, 112, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 80, 111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80, 0, 0, 0, 100, 0, 0, 0 }[0]),
+        Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 2, 0, 76, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 76, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0 }[0]),
     };
     public struct UserDataMap0
     {
         public const int Count = 2;
         public static readonly Cores.UserKey.Unmanaged[] Keys = new Cores.UserKey.Unmanaged[]
         {
-            new Cores.UserKey.UnmanagedConverter().Convert(new()
-            {
-                Value = 0,
-            }),
-            new Cores.UserKey.UnmanagedConverter().Convert(new()
-            {
-                Value = 1,
-            }),
+            Unsafe.As<byte, Cores.UserKey.Unmanaged>(ref new byte[] { 0, 0, 0, 0 }[0]),
+            Unsafe.As<byte, Cores.UserKey.Unmanaged>(ref new byte[] { 1, 0, 0, 0 }[0]),
         };
         public static readonly Cores.UserData.Unmanaged[] Values = new Cores.UserData.Unmanaged[]
         {
-            new Cores.UserData.UnmanagedConverter().Convert(new()
-            {
-                NameInfo = new Cores.UserNameInfo()
-                {
-                    FamilyName = @"Hap",
-                    LastName = @"Po",
-                },
-                Age = 80,
-                Balance = 100,
-            }),
-            new Cores.UserData.UnmanagedConverter().Convert(new()
-            {
-                NameInfo = new Cores.UserNameInfo()
-                {
-                    FamilyName = @"Li",
-                    LastName = @"Li",
-                },
-                Age = 15,
-                Balance = 0,
-            }),
+            Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 3, 0, 72, 97, 112, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 80, 111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80, 0, 0, 0, 100, 0, 0, 0 }[0]),
+            Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 2, 0, 76, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 76, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0 }[0]),
         };
         public static readonly t_Enumerable Enumerable;
         public struct t_Enumerable : IEnumerable<KeyValuePair<Cores.UserKey.Unmanaged, Cores.UserData.Unmanaged>>
@@ -172,26 +103,8 @@ public static class GameBalance
         };
         public static readonly Cores.UserData.Unmanaged[] Values = new Cores.UserData.Unmanaged[]
         {
-            new Cores.UserData.UnmanagedConverter().Convert(new()
-            {
-                NameInfo = new Cores.UserNameInfo()
-                {
-                    FamilyName = @"Hap",
-                    LastName = @"Po",
-                },
-                Age = 80,
-                Balance = 100,
-            }),
-            new Cores.UserData.UnmanagedConverter().Convert(new()
-            {
-                NameInfo = new Cores.UserNameInfo()
-                {
-                    FamilyName = @"Li",
-                    LastName = @"Li",
-                },
-                Age = 15,
-                Balance = 0,
-            }),
+            Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 3, 0, 72, 97, 112, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 80, 111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80, 0, 0, 0, 100, 0, 0, 0 }[0]),
+            Unsafe.As<byte, Cores.UserData.Unmanaged>(ref new byte[] { 2, 0, 76, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 76, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0 }[0]),
         };
         public static readonly t_Enumerable Enumerable;
         public struct t_Enumerable : IEnumerable<KeyValuePair<Cores.UserKey.Unmanaged, Cores.UserData.Unmanaged>>
@@ -255,14 +168,8 @@ public static class GameBalance
         public const int Count = 2;
         public static readonly Cores.UserKey.Unmanaged[] Keys = new Cores.UserKey.Unmanaged[]
         {
-            new Cores.UserKey.UnmanagedConverter().Convert(new()
-            {
-                Value = 0,
-            }),
-            new Cores.UserKey.UnmanagedConverter().Convert(new()
-            {
-                Value = 1,
-            }),
+            Unsafe.As<byte, Cores.UserKey.Unmanaged>(ref new byte[] { 0, 0, 0, 0 }[0]),
+            Unsafe.As<byte, Cores.UserKey.Unmanaged>(ref new byte[] { 1, 0, 0, 0 }[0]),
         };
         public static readonly Cores.UserData.Unmanaged[] Values = new Cores.UserData.Unmanaged[]
         {
